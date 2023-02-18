@@ -1,0 +1,25 @@
+#map{
+    height: 500px;
+    box-shadow: 10px 10px 10px lightgray;
+    width: 500px;
+    display:block;
+    margin:auto;
+}
+
+#mycontent{
+    margin-bottom: 10px;
+    text-align: center;
+    font-family: 'Lato';
+    font-size: 20px;
+}
+
+#credits{
+    margin-top: 9px;
+    font-family: 'Lato';
+    color: lightgray;
+    text-align: center;
+}
+
+body {
+    background-color: lightgoldenrodyellow;
+  }
