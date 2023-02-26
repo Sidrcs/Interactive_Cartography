@@ -1,7 +1,9 @@
 /* Map of GeoJSON data from oil_data_center.geojson */
+
 //declare map var in global scope
 var map;
 var minValue;
+
 //function to instantiate the Leaflet map
 function createMap(){
     //create the map
@@ -19,12 +21,43 @@ function createMap(){
     }).addTo(map);
 
     //call getData function
-    getData();  
+    getData(map);  
     
     //calling HTML elements
     credits();
     myContent();
 };
+
+function calculateMinValue(data){
+    //creating an empty array to store all values
+    var allValues = [];
+
+    //looping through each city [each feature is loaded as city]
+    for (var city of data.features){
+        for (var year = 1981; year <= 2021; year += 1){
+            var value = city.properties['prod_'+str(year)]
+
+            //push each value from the each city feature into allValues array
+            allValues.push(value);
+
+        }
+    }
+    //calulating min value of the array allValues
+    var minValue = Math.min(allValues)
+    return minValue;
+
+};
+
+//calculate the radius of each proportional symbol
+function calcPropRadius(attValue) {
+    //constant factor adjusts symbol sizes evenly
+    var minRadius = 5;
+    //Flannery Apperance Compensation formula
+    var radius = 1.0083 * Math.pow(attValue/minValue,0.5715) * minRadius
+
+    return radius;
+};
+
 
 function createPropSymbols(data){
     //variable to store one column value for now
