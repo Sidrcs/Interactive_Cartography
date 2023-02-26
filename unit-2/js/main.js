@@ -25,6 +25,32 @@ function createMap(){
     myContent();
 };
 
+function createPropSymbols(data){
+    //variable to store one column value for now
+    var attribute = "prod_1981"
+
+    //create marker options
+    var geojsonMarkerOptions = {
+        radius: 8,
+        fillColor: "#ff7800",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    };
+
+    //create a Leaflet GeoJSON layer and add it to the map
+    L.geoJson(data, {
+        pointToLayer: function (feature, latlng) {
+            var attValue = Number(feature.properties[attribute]);
+
+            console.log(feature.properties, attValue);
+            
+            return L.circleMarker(latlng, geojsonMarkerOptions);
+        }
+    }).addTo(map);
+};
+
 //function to create circle markers for each feature
 function pointToLayer(feature, latlng) {
     //create marker options
@@ -60,7 +86,7 @@ function getData(){
             return response.json();
         })
         .then(function(json){ //which is then chained as json into function
-
+            createPropSymbols(json)
             //create a Leaflet GeoJSON layer and add it to the map
             L.geoJson(json, {
                 pointToLayer: pointToLayer,
