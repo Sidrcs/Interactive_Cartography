@@ -1,6 +1,7 @@
 /* Map of GeoJSON data from oil_data_center.geojson */
 //declare map var in global scope
 var map;
+var minValue;
 //function to instantiate the Leaflet map
 function createMap(){
     //create the map
@@ -45,7 +46,8 @@ function createPropSymbols(data){
             var attValue = Number(feature.properties[attribute]);
 
             console.log(feature.properties, attValue);
-            
+            console.log(typeof attValue)
+
             return L.circleMarker(latlng, geojsonMarkerOptions);
         }
     }).addTo(map);
