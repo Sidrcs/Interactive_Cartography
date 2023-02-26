@@ -1,11 +1,10 @@
-/* Map of GeoJSON data from oil_data_center.geojson */
-
-//declare map var in global scope
+//declare map variable globally so all functions have access
 var map;
 var minValue;
 
-//function to instantiate the Leaflet map
+//step 1 create map
 function createMap(){
+
     //create the map
     map = L.map('map', {
         center: [41.25, -99.29],
@@ -21,123 +20,89 @@ function createMap(){
     }).addTo(map);
 
     //call getData function
-    getData(map);  
-    
-    //calling HTML elements
-    credits();
-    myContent();
+    getData(map);
 };
 
 function calculateMinValue(data){
-    //creating an empty array to store all values
-    var allValues = [];
-
-    //looping through each city [each feature is loaded as city]
-    for (var city of data.features){
-        for (var year = 1981; year <= 2021; year += 1){
-            var value = city.properties['prod_'+str(year)]
-
-            //push each value from the each city feature into allValues array
-            allValues.push(value);
-
+    //create empty array to store all non-zero data values
+    var nonZeroValues = [];
+    //loop through each city
+    for(var city of data.features){
+        //loop through each year
+        for(var year = 1981; year <= 2021; year+=1){
+              //get production value for current year
+              var value = city.properties["prod_"+ String(year)];
+              //if the value is non-zero, add it to the nonZeroValues array
+              if (value !== 0) {
+                  nonZeroValues.push(value);
+              }
         }
     }
-    //calulating min value of the array allValues
-    var minValue = Math.min(allValues)
-    return minValue;
+    //get minimum value of our array
+    var minValue = Math.min(...nonZeroValues);
 
+    console.log(minValue)
+    return minValue;
 };
 
-//calculate the radius of each proportional symbol
 function calcPropRadius(attValue) {
     //constant factor adjusts symbol sizes evenly
-    var minRadius = 5;
-    //Flannery Apperance Compensation formula
-    var radius = 1.0083 * Math.pow(attValue/minValue,0.5715) * minRadius
+    var minRadius = 0.02;
 
-    return radius;
+    if (attValue === 0) {
+        // assign radius of 1 for zero attribute values
+        return 1;
+    } else {
+        // perform Flannery Appearance Compensation formula for non-zero attribute values
+        var radius = 1.0083 * Math.pow(attValue/minValue,0.5715) * minRadius;
+        return radius;
+    }
 };
 
 
+//Step 3: Add circle markers for point features to the map
 function createPropSymbols(data){
-    //variable to store one column value for now
-    var attribute = "prod_1981"
+
+    //Step 4: Determine which attribute to visualize with proportional symbols
+    var attribute = "prod_1981";
 
     //create marker options
     var geojsonMarkerOptions = {
-        radius: 8,
-        fillColor: "#ff7800",
-        color: "#000",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
-    };
-
-    //create a Leaflet GeoJSON layer and add it to the map
-    L.geoJson(data, {
-        pointToLayer: function (feature, latlng) {
-            var attValue = Number(feature.properties[attribute]);
-
-            console.log(feature.properties, attValue);
-            console.log(typeof attValue)
-
-            return L.circleMarker(latlng, geojsonMarkerOptions);
-        }
-    }).addTo(map);
-};
-
-//function to create circle markers for each feature
-function pointToLayer(feature, latlng) {
-    //create marker options
-    var geojsonMarkerOptions = {
-        radius: 8,
         fillColor: "#969696",
         color: "#525252",
-        weight:1,
-        opacity:1,
-        fillOpacity: 0.7
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.7,
+        radius: 8
     };
 
-    return L.circleMarker(latlng,geojsonMarkerOptions);
-};
+    L.geoJson(data, {
+        pointToLayer: function (feature, latlng) {
+            //Step 5: For each feature, determine its value for the selected attribute
+            var attValue = Number(feature.properties[attribute]);
 
-//function to create popups for each feature
-function onEachFeature(feature, layer) {
-    //create a popup of html string with all properties
-    var popupContent = "";
-    if (feature.properties) {
-        //loop to add feature property names and values to html string
-        for (var property in feature.properties){
-            popupContent += "<p>" + "<strong>" + property + "</strong>" + ": " + feature.properties[property] + "</p>";
+            //Step 6: Give each feature's circle marker a radius based on its attribute value
+            geojsonMarkerOptions.radius = calcPropRadius(attValue);
+
+            //create circle markers
+            return L.circleMarker(latlng, geojsonMarkerOptions);
         }
-        layer.bindPopup(popupContent);
-    };
+    }).addTo(map)
 };
 
+//Step 2: Import GeoJSON data
 function getData(){
-    //load the data using fetch 
+    //load the data
     fetch("data/oil_data_center.geojson")
-        .then(function(response){ //chaining the output with then and returning a json object
+        .then(function(response){
             return response.json();
         })
-        .then(function(json){ //which is then chained as json into function
-            createPropSymbols(json)
-            //create a Leaflet GeoJSON layer and add it to the map
-            L.geoJson(json, {
-                pointToLayer: pointToLayer,
-                onEachFeature: onEachFeature
-            }).addTo(map);
-        })  
+        .then(function(json){
+            //calculate minimum data value
+            minValue = calculateMinValue(json);
+            //call function to create proportional symbols
+            createPropSymbols(json);
+        })
 };
 
-function credits(){
-    var cred = document.getElementById('credits').innerHTML = 'Ⓒ Sid (ramavajjala@wisc.edu)';
-};
-
-
-function myContent(){
-    var cred = document.getElementById('mycontent').innerHTML = 'Oil Production Map of U.S 1981 - 2021';
-}
-
-
-document.addEventListener('DOMContentLoaded',createMap);
+document.addEventListener('DOMContentLoaded',createMap)
