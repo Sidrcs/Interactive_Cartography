@@ -21,6 +21,10 @@ function createMap(){
 
     //call getData function
     getData(map);
+
+    //calling HTML elements
+    credits();
+    myContent();
 };
 
 function calculateMinValue(data){
@@ -125,5 +129,14 @@ function getData(){
             createPropSymbols(json);
         })
 };
+
+function credits(){
+    var cred = document.getElementById('credits').innerHTML = 'Ⓒ Sid (ramavajjala@wisc.edu)';
+};
+
+
+function myContent(){
+    var cred = document.getElementById('mycontent').innerHTML = 'Oil Production Map of U.S 1981 - 2021';
+}
 
 document.addEventListener('DOMContentLoaded',createMap)
