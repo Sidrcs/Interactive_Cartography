@@ -61,7 +61,7 @@ function calcPropRadius(attValue) {
 
 
 //Step 3: Add circle markers for point features to the map
-function createPropSymbols(data){
+function pointToLayer(data){
 
     //Step 4: Determine which attribute to visualize with proportional symbols
     var attribute = "prod_1981";
@@ -85,9 +85,24 @@ function createPropSymbols(data){
             geojsonMarkerOptions.radius = calcPropRadius(attValue);
 
             //create circle markers
-            return L.circleMarker(latlng, geojsonMarkerOptions);
+            var layer = L.circleMarker(latlng, geojsonMarkerOptions);
+
+            //HTML pop content or label on display
+            var popupContent = "<p><b>City:</b> " + feature.properties.City + "</p><p><b>";
+
+            //Bind popup to the circle marker
+            layer.bindPopup(popupContent);
+            return layer
         }
     }).addTo(map)
+};
+
+//Add circle markers for point features to the map
+function createPropSymbols(data, map){
+    //create a Leaflet GeoJSON layer and add it to the map
+    L.geoJson(data, {
+        pointToLayer: pointToLayer
+    }).addTo(map);
 };
 
 //Step 2: Import GeoJSON data
