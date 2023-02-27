@@ -51,7 +51,7 @@ function calculateMinValue(data){
 
 function calcPropRadius(attValue) {
     //constant factor adjusts symbol sizes evenly
-    var minRadius = 0.02;
+    var minRadius = 0.015;
 
     if (attValue === 0) {
         // assign radius of 1 for zero attribute values
@@ -68,7 +68,7 @@ function calcPropRadius(attValue) {
 function pointToLayer(data){
 
     //Step 4: Determine which attribute to visualize with proportional symbols
-    var attribute = "prod_1981";
+    var attribute = "prod_2021";
 
     //create marker options
     var geojsonMarkerOptions = {
@@ -95,8 +95,7 @@ function pointToLayer(data){
             var popupContent = "<b>City:</b> " + feature.properties.City + "<br>";
 
             var year = attribute.split('_')[1] //retrieving only year
-            popupContent += "<b>Oil production in " + year + ":</b> " + feature.properties[attribute] + "<br>";
-            popupContent += "<b>Units:</b> Thousand barrels (Tbbl)"
+            popupContent += "<b>Oil production in " + year + ":</b> " + ((feature.properties[attribute]*1000)/1000000).toFixed(1) + " million barrels<br>";
 
             //Bind popup to the circle marker and set an offset
             layer.bindPopup(popupContent, {
