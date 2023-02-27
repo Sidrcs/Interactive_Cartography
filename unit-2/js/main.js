@@ -44,8 +44,6 @@ function calculateMinValue(data){
     }
     //get minimum value of our array
     var minValue = Math.min(...nonZeroValues);
-
-    console.log(minValue)
     return minValue;
 };
 
@@ -111,7 +109,26 @@ function createPropSymbols(data, map){
     //create a Leaflet GeoJSON layer and add it to the map
     L.geoJson(data, {
         pointToLayer: pointToLayer
-    }).addTo(map);
+    })
+};
+
+
+function createSequenceControls(){
+    //create range input element (slider)
+    var slider = "<input class='range-slider' type='range'></input>";
+    document.querySelector("#panel").insertAdjacentHTML('beforeend',slider);
+
+    
+
+    //set slider attributes
+    document.querySelector(".range-slider").max = 39;
+    document.querySelector(".range-slider").min = 0;
+    document.querySelector(".range-slider").value = 0;
+    document.querySelector(".range-slider").step = 1;
+
+    //Adding forward and backward buttons
+    document.querySelector('#panel').insertAdjacentHTML('beforeend','<button class="step" id="reverse">Reverse</button>');
+    document.querySelector('#panel').insertAdjacentHTML('beforeend','<button class="step" id="forward">Forward</button>');
 };
 
 //Step 2: Import GeoJSON data
@@ -126,6 +143,7 @@ function getData(){
             minValue = calculateMinValue(json);
             //call function to create proportional symbols
             createPropSymbols(json);
+            createSequenceControls();
         })
 };
 
