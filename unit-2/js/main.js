@@ -2,7 +2,6 @@
 var map;
 var minValue;
 
-//step 1 create map
 function createMap(){
 
     //create the map
@@ -30,7 +29,7 @@ function createMap(){
 function calculateMinValue(data){
     //create empty array to store all non-zero data values
     var nonZeroValues = [];
-    //loop through each city
+    //loop through each city feature
     for(var city of data.features){
         //loop through each year
         for(var year = 1981; year <= 2021; year+=1){
@@ -48,7 +47,7 @@ function calculateMinValue(data){
 };
 
 function calcPropRadius(attValue) {
-    //constant factor adjusts symbol sizes evenly
+    //constant factor adjusts symbol sizes evenly - set lowest as values explode
     var minRadius = 0.015;
 
     if (attValue === 0) {
@@ -86,12 +85,12 @@ function pointToLayer(feature, latlng, attributes){
     //create circle marker layer
     var layer = L.circleMarker(latlng, geojsonMarkerOptions);
 
-    //build popup content string starting with city...Example 2.1 line 24
+    //build popup content string starting with city
     var popupContent = "<p><b>City:</b> " + feature.properties.City + "</p>";
 
     //add formatted attribute to popup content string
     var year = attribute.split("_")[1];
-    popupContent += "<b>Oil production in " + year + ":</b> " + ((feature.properties[attribute]*1000)/1000000).toFixed(1) + " Million barrels<br>";
+    popupContent += "<b>Oil production in " + year + ":</b> " + ((feature.properties[attribute]*1000)/1000000).toFixed(1) + " million barrels<br>";
 
     //bind the popup to the circle marker
     layer.bindPopup(popupContent, {
@@ -117,6 +116,7 @@ function createPropSymbols(data, attributes){
 function updatePropSymbols(attribute){
     map.eachLayer(function(layer){
       console.log("here!");
+
         if (layer.feature && layer.feature.properties[attribute]){
           //access feature properties
            var props = layer.feature.properties;
@@ -130,7 +130,7 @@ function updatePropSymbols(attribute){
 
            //add formatted attribute to panel content string
            var year = attribute.split("_")[1];
-           popupContent += "<b>Oil production in " + year + ":</b> " + ((props[attribute]*1000)/1000000).toFixed(1) + " Million barrels<br>";
+           popupContent += "<b>Oil production in " + year + ":</b> " + ((props[attribute]*1000)/1000000).toFixed(1) + " million barrels<br>";
 
            //update popup with new content
            popup = layer.getPopup();
@@ -155,6 +155,7 @@ function processData(data){
         };
     };
 
+    //array of prod_[year] names
     return attributes;
 };
 
@@ -183,31 +184,31 @@ function createSequenceControls(attributes){
     steps.forEach(function(step){
         step.addEventListener("click", function(){
             var index = document.querySelector('.range-slider').value;
-            //Step 6: increment or decrement depending on button clicked
+            //increment or decrement depending on button clicked
             if (step.id == 'forward'){
                 index++;
-                //Step 7: if past the last attribute, wrap around to first attribute
+                //if past the last attribute, wrap around to first attribute
                 index = index > 39 ? 0 : index;
             } else if (step.id == 'reverse'){
                 index--;
-                //Step 7: if past the first attribute, wrap around to last attribute
+                //if past the first attribute, wrap around to last attribute
                 index = index < 0 ? 39 : index;
             };
 
-            //Step 8: update slider
+            //update slider
             document.querySelector('.range-slider').value = index;
 
-            //Step 9: pass new attribute to update symbols
+            //pass new attribute to update symbols
             updatePropSymbols(attributes[index]);
         })
     })
 
-    //Step 5: input listener for slider
+    //input listener for slider
     document.querySelector('.range-slider').addEventListener('input', function(){
-        //Step 6: get the new index value
+        //get the new index value
         var index = this.value;
 
-        //Step 9: pass new attribute to update symbols
+        //pass new attribute to update symbols
         updatePropSymbols(attributes[index]);
     });
 };
