@@ -88,10 +88,16 @@ function pointToLayer(data){
             var layer = L.circleMarker(latlng, geojsonMarkerOptions);
 
             //HTML pop content or label on display
-            var popupContent = "<p><b>City:</b> " + feature.properties.City + "</p><p><b>";
+            var popupContent = "<b>City:</b> " + feature.properties.City + "<br>";
 
-            //Bind popup to the circle marker
-            layer.bindPopup(popupContent);
+            var year = attribute.split('_')[1] //retrieving only year
+            popupContent += "<b>Oil production in " + year + ":</b> " + feature.properties[attribute] + "<br>";
+            popupContent += "<b>Units:</b> Thousand barrels (Tbbl)"
+
+            //Bind popup to the circle marker and set an offset
+            layer.bindPopup(popupContent, {
+                offset: new L.Point(0,-geojsonMarkerOptions.radius) 
+            });
             return layer
         }
     }).addTo(map)
