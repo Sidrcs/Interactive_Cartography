@@ -53,7 +53,7 @@ function calcPropRadius(attValue) {
 
     if (attValue === 0) {
         // assign radius of 1 for zero attribute values
-        return 1;
+        return 5;
     } else {
         // perform Flannery Appearance Compensation formula for non-zero attribute values
         var radius = 1.0083 * Math.pow(attValue/minValue,0.5715) * minRadius;
@@ -63,10 +63,10 @@ function calcPropRadius(attValue) {
 
 
 //Step 3: Add circle markers for point features to the map
-function pointToLayer(data){
+function pointToLayer(feature, layer, attributes){
 
     //Step 4: Determine which attribute to visualize with proportional symbols
-    var attribute = "prod_2021";
+    var attribute = attributes[0];
 
     //create marker options
     var geojsonMarkerOptions = {
@@ -105,11 +105,13 @@ function pointToLayer(data){
 };
 
 //Add circle markers for point features to the map
-function createPropSymbols(data, map){
+function createPropSymbols(data, attributes){
     //create a Leaflet GeoJSON layer and add it to the map
     L.geoJson(data, {
-        pointToLayer: pointToLayer
-    })
+        pointToLayer: function(feature, latlng){
+            return pointToLayer(feature, latlng, attributes);
+        }
+    }).addTo(map);
 };
 
 
@@ -127,11 +129,85 @@ function createSequenceControls(){
     document.querySelector(".range-slider").step = 1;
 
     //Adding forward and backward buttons
-    document.querySelector('#panel').insertAdjacentHTML('beforeend','<button class="step" id="reverse">Reverse</button>');
-    document.querySelector('#panel').insertAdjacentHTML('beforeend','<button class="step" id="forward">Forward</button>');
+    document.querySelector('#panel').insertAdjacentHTML('beforeend','<button class="step" id="reverse"></button>');
+    document.querySelector('#panel').insertAdjacentHTML('beforeend','<button class="step" id="forward"></button>');
+    //replace button content with images
+    document.querySelector('#reverse').insertAdjacentHTML('beforeend',"<img src='img/reverse.png'>");
+    document.querySelector('#forward').insertAdjacentHTML('beforeend',"<img src='img/forward.png'>");
+    
+    document.querySelectorAll('.step').forEach(function(step){
+        step.addEventListener("click", function(){
+            var index = document.querySelector('.range-slider').value;
+    
+            //Step 6: increment or decrement depending on button clicked
+            if (step.id == 'forward'){
+                index++;
+                //Step 7: if past the last attribute, wrap around to first attribute
+                index = index > 39 ? 0 : index;
+            } else if (step.id == 'reverse'){
+                index--;
+                //Step 7: if past the first attribute, wrap around to last attribute
+                index = index < 0 ? 39 : index;
+            };
+        });
+    });
+            
+    document.querySelector('.range-slider').addEventListener('input', function(){
+         // get the new index value
+        var index = this.value;
+        console.log(index)
+    });
+      
 };
 
-//Step 2: Import GeoJSON data
+function processData(data){
+    //empty array to hold attributes
+    var attributes = [];
+
+    //properties of the first feature in the dataset
+    var properties = data.features[0].properties;
+
+    //push each attribute name into attributes array
+    for (var attribute in properties){
+        //only take attributes with population values
+        if (attribute.indexOf("prod") > -1){
+            attributes.push(attribute);
+        };
+    };
+
+    //check result
+    console.log(attributes);
+
+    return attributes;
+};
+
+
+function updatePropSymbols(attribute){
+    map.eachLayer(function(layer){
+        if (layer.feature && layer.feature.properties[attribute]){
+            //access feature properties
+            var props = layer.feature.properties;
+
+            //update each feature's radius based on new attribute values
+            var radius = calcPropRadius(props[attribute]);
+            layer.setRadius(radius);
+
+            //add city to popup content string
+            var popupContent = "<p><b>City:</b> " + props.City + "</p>";
+
+            //add formatted attribute to panel content string
+            var year = attribute.split("_")[1];
+            popupContent += "<b>Oil production in " + year + ":</b> " + ((feature.properties[attribute]*1000)/1000000).toFixed(1) + " million barrels<br>";
+
+            //update popup content            
+            popup = layer.getPopup();            
+            popup.setContent(popupContent).update();
+        };
+    });
+};
+
+
+//Import GeoJSON data
 function getData(){
     //load the data
     fetch("data/oil_data_center.geojson")
@@ -139,10 +215,11 @@ function getData(){
             return response.json();
         })
         .then(function(json){
+            processData(json)
             //calculate minimum data value
             minValue = calculateMinValue(json);
             //call function to create proportional symbols
-            createPropSymbols(json);
+            createPropSymbols(json, attributes);
             createSequenceControls();
         })
 };
