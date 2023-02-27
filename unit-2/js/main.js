@@ -23,8 +23,8 @@ function createMap(){
     getData(map);
 
     //calling HTML elements
-    credits();
-    myContent();
+    document.getElementById('mycontent').innerHTML = 'Oil Production Map of U.S 1981 - 2021';
+    document.getElementById('credits').innerHTML = 'Ⓒ Sid (ramavajjala@wisc.edu)';
 };
 
 function calculateMinValue(data){
@@ -62,11 +62,12 @@ function calcPropRadius(attValue) {
 };
 
 
-//Step 3: Add circle markers for point features to the map
-function pointToLayer(feature, layer, attributes){
+//Add circle markers for point features to the map
+function pointToLayer(feature, latlng, attributes){
 
-    //Step 4: Determine which attribute to visualize with proportional symbols
+    //Determine which attribute to visualize with proportional symbols
     var attribute = attributes[0];
+    console.log(attribute);
 
     //create marker options
     var geojsonMarkerOptions = {
@@ -75,34 +76,32 @@ function pointToLayer(feature, layer, attributes){
         weight: 1,
         opacity: 1,
         fillOpacity: 0.7,
-        radius: 8
     };
+    //For each feature, determine its value for the selected attribute
+    var attValue = Number(feature.properties[attribute]);
 
-    L.geoJson(data, {
-        pointToLayer: function (feature, latlng) {
-            //Step 5: For each feature, determine its value for the selected attribute
-            var attValue = Number(feature.properties[attribute]);
+    //Give each feature's circle marker a radius based on its attribute value
+    geojsonMarkerOptions.radius = calcPropRadius(attValue);
 
-            //Step 6: Give each feature's circle marker a radius based on its attribute value
-            geojsonMarkerOptions.radius = calcPropRadius(attValue);
+    //create circle marker layer
+    var layer = L.circleMarker(latlng, geojsonMarkerOptions);
 
-            //create circle markers
-            var layer = L.circleMarker(latlng, geojsonMarkerOptions);
+    //build popup content string starting with city...Example 2.1 line 24
+    var popupContent = "<p><b>City:</b> " + feature.properties.City + "</p>";
 
-            //HTML pop content or label on display
-            var popupContent = "<b>City:</b> " + feature.properties.City + "<br>";
+    //add formatted attribute to popup content string
+    var year = attribute.split("_")[1];
+    popupContent += "<b>Oil production in " + year + ":</b> " + ((feature.properties[attribute]*1000)/1000000).toFixed(1) + " Million barrels<br>";
 
-            var year = attribute.split('_')[1] //retrieving only year
-            popupContent += "<b>Oil production in " + year + ":</b> " + ((feature.properties[attribute]*1000)/1000000).toFixed(1) + " million barrels<br>";
+    //bind the popup to the circle marker
+    layer.bindPopup(popupContent, {
+          offset: new L.Point(0,-geojsonMarkerOptions.radius)
+      });
 
-            //Bind popup to the circle marker and set an offset
-            layer.bindPopup(popupContent, {
-                offset: new L.Point(0,-geojsonMarkerOptions.radius) 
-            });
-            return layer
-        }
-    }).addTo(map)
+    //return the circle marker to the L.geoJson pointToLayer option
+    return layer;
 };
+    
 
 //Add circle markers for point features to the map
 function createPropSymbols(data, attributes){
@@ -115,49 +114,30 @@ function createPropSymbols(data, attributes){
 };
 
 
-function createSequenceControls(){
-    //create range input element (slider)
-    var slider = "<input class='range-slider' type='range'></input>";
-    document.querySelector("#panel").insertAdjacentHTML('beforeend',slider);
+function updatePropSymbols(attribute){
+    map.eachLayer(function(layer){
+      console.log("here!");
+        if (layer.feature && layer.feature.properties[attribute]){
+          //access feature properties
+           var props = layer.feature.properties;
 
-    
+           //update each feature's radius based on new attribute values
+           var radius = calcPropRadius(props[attribute]);
+           layer.setRadius(radius);
 
-    //set slider attributes
-    document.querySelector(".range-slider").max = 39;
-    document.querySelector(".range-slider").min = 0;
-    document.querySelector(".range-slider").value = 0;
-    document.querySelector(".range-slider").step = 1;
+           //add city to popup content string
+           var popupContent = "<p><b>City:</b> " + props.City + "</p>";
 
-    //Adding forward and backward buttons
-    document.querySelector('#panel').insertAdjacentHTML('beforeend','<button class="step" id="reverse"></button>');
-    document.querySelector('#panel').insertAdjacentHTML('beforeend','<button class="step" id="forward"></button>');
-    //replace button content with images
-    document.querySelector('#reverse').insertAdjacentHTML('beforeend',"<img src='img/reverse.png'>");
-    document.querySelector('#forward').insertAdjacentHTML('beforeend',"<img src='img/forward.png'>");
-    
-    document.querySelectorAll('.step').forEach(function(step){
-        step.addEventListener("click", function(){
-            var index = document.querySelector('.range-slider').value;
-    
-            //Step 6: increment or decrement depending on button clicked
-            if (step.id == 'forward'){
-                index++;
-                //Step 7: if past the last attribute, wrap around to first attribute
-                index = index > 39 ? 0 : index;
-            } else if (step.id == 'reverse'){
-                index--;
-                //Step 7: if past the first attribute, wrap around to last attribute
-                index = index < 0 ? 39 : index;
-            };
-        });
+           //add formatted attribute to panel content string
+           var year = attribute.split("_")[1];
+           popupContent += "<b>Oil production in " + year + ":</b> " + ((props[attribute]*1000)/1000000).toFixed(1) + " Million barrels<br>";
+
+           //update popup with new content
+           popup = layer.getPopup();
+           popup.setContent(popupContent).update();
+
+        };
     });
-            
-    document.querySelector('.range-slider').addEventListener('input', function(){
-         // get the new index value
-        var index = this.value;
-        console.log(index)
-    });
-      
 };
 
 function processData(data){
@@ -175,62 +155,79 @@ function processData(data){
         };
     };
 
-    //check result
-    console.log(attributes);
-
     return attributes;
 };
 
 
-function updatePropSymbols(attribute){
-    map.eachLayer(function(layer){
-        if (layer.feature && layer.feature.properties[attribute]){
-            //access feature properties
-            var props = layer.feature.properties;
+function createSequenceControls(attributes){
+    //create range input element (slider)
+    var slider = "<input class='range-slider' type='range'></input>";
+    document.querySelector("#panel").insertAdjacentHTML('beforeend',slider);
 
-            //update each feature's radius based on new attribute values
-            var radius = calcPropRadius(props[attribute]);
-            layer.setRadius(radius);
+    //set slider attributes
+    document.querySelector(".range-slider").max = 39;
+    document.querySelector(".range-slider").min = 0;
+    document.querySelector(".range-slider").value = 0;
+    document.querySelector(".range-slider").step = 1;
 
-            //add city to popup content string
-            var popupContent = "<p><b>City:</b> " + props.City + "</p>";
+    //add step buttons
+    document.querySelector('#panel').insertAdjacentHTML('beforeend','<button class="step" id="reverse"></button>');
+    document.querySelector('#panel').insertAdjacentHTML('beforeend','<button class="step" id="forward"></button>');
 
-            //add formatted attribute to panel content string
-            var year = attribute.split("_")[1];
-            popupContent += "<b>Oil production in " + year + ":</b> " + ((feature.properties[attribute]*1000)/1000000).toFixed(1) + " million barrels<br>";
+    //replace button content with images
+    document.querySelector('#reverse').insertAdjacentHTML('beforeend',"<img src='img/reverse.png'>")
+    document.querySelector('#forward').insertAdjacentHTML('beforeend',"<img src='img/forward.png'>")
 
-            //update popup content            
-            popup = layer.getPopup();            
-            popup.setContent(popupContent).update();
-        };
+    var steps = document.querySelectorAll('.step');
+
+    steps.forEach(function(step){
+        step.addEventListener("click", function(){
+            var index = document.querySelector('.range-slider').value;
+            //Step 6: increment or decrement depending on button clicked
+            if (step.id == 'forward'){
+                index++;
+                //Step 7: if past the last attribute, wrap around to first attribute
+                index = index > 39 ? 0 : index;
+            } else if (step.id == 'reverse'){
+                index--;
+                //Step 7: if past the first attribute, wrap around to last attribute
+                index = index < 0 ? 39 : index;
+            };
+
+            //Step 8: update slider
+            document.querySelector('.range-slider').value = index;
+
+            //Step 9: pass new attribute to update symbols
+            updatePropSymbols(attributes[index]);
+        })
+    })
+
+    //Step 5: input listener for slider
+    document.querySelector('.range-slider').addEventListener('input', function(){
+        //Step 6: get the new index value
+        var index = this.value;
+
+        //Step 9: pass new attribute to update symbols
+        updatePropSymbols(attributes[index]);
     });
 };
 
 
 //Import GeoJSON data
-function getData(){
+function getData(map){
     //load the data
     fetch("data/oil_data_center.geojson")
         .then(function(response){
             return response.json();
         })
         .then(function(json){
-            processData(json)
+            var attributes = processData(json)
             //calculate minimum data value
             minValue = calculateMinValue(json);
             //call function to create proportional symbols
             createPropSymbols(json, attributes);
-            createSequenceControls();
+            createSequenceControls(attributes);
         })
 };
 
-function credits(){
-    var cred = document.getElementById('credits').innerHTML = 'Ⓒ Sid (ramavajjala@wisc.edu)';
-};
-
-
-function myContent(){
-    var cred = document.getElementById('mycontent').innerHTML = 'Oil Production Map of U.S 1981 - 2021';
-}
-
-document.addEventListener('DOMContentLoaded',createMap)
+document.addEventListener('DOMContentLoaded', createMap)
