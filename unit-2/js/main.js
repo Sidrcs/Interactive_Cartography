@@ -36,7 +36,7 @@ function calculateMinValue(data){
               //get production value for current year
               var value = city.properties["prod_"+ String(year)];
               //if the value is non-zero, add it to the nonZeroValues array
-              if (value !== 0) {
+              if (Number(value) > 0) {
                   nonZeroValues.push(value);
               }
         }
