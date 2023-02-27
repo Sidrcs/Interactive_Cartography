@@ -2,12 +2,20 @@
     margin: 0.2em, 0;
 }
 
-#map{
-    height: 500px;
-    box-shadow: 10px 10px 10px lightgray;
-    display:block;
-    margin:auto;
-}
+#map {    
+    height: 500px;    
+    width: 80%;
+    display: inline-block;
+    }
+
+    #panel {    
+        width: 16%;    
+        padding: 20px;
+        display: inline-block;
+        vertical-align: top;
+        text-align: center;
+        line-height: 42px;
+    }
 
 #mycontent{
     width: auto;
