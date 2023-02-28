@@ -52,7 +52,7 @@ function calcPropRadius(attValue) {
 
     if (attValue === 0) {
         // assign radius of 1 for zero attribute values
-        return 5;
+        return minRadius;
     } else {
         // perform Flannery Appearance Compensation formula for non-zero attribute values
         var radius = 1.0083 * Math.pow(attValue/minValue,0.5715) * minRadius;
