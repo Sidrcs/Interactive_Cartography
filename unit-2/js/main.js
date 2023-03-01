@@ -1,4 +1,5 @@
-//declare map variable globally so all functions have access
+/* Map of GeoJSON data from oil_data_center.geojson */
+//declare map var in global scope
 var map;
 var minValue;
 
@@ -15,7 +16,7 @@ function createMap(){
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 	subdomains: 'abcd',
     minZoom: 4, //setting min zoom level
-	maxZoom: 7 //seeting max zoom level
+	maxZoom: 7 //setting max zoom level
     }).addTo(map);
 
     //call getData function
@@ -24,6 +25,7 @@ function createMap(){
     //calling HTML elements
     document.getElementById('mycontent').innerHTML = 'Oil Production Map of U.S 1981 - 2021';
     document.getElementById('credits').innerHTML = 'Ⓒ Sid (ramavajjala@wisc.edu)';
+    document.getElementById('panelOne').innerHTML = 'Now, you are in the year: ';
 };
 
 function calculateMinValue(data){
@@ -52,7 +54,7 @@ function calcPropRadius(attValue) {
 
     if (attValue === 0) {
         // assign radius of 1 for zero attribute values
-        return minRadius;
+        return 20;
     } else {
         // perform Flannery Appearance Compensation formula for non-zero attribute values
         var radius = 1.0083 * Math.pow(attValue/minValue,0.5715) * minRadius;
@@ -88,16 +90,22 @@ function pointToLayer(feature, latlng, attributes){
     //build popup content string starting with city
     var popupContent = "<p><b>City:</b> " + feature.properties.City + "</p>";
 
+    var popupValue;
+    if (attValue > 0)
+        popupValue = ((attValue*1000)/1000000).toFixed(1) + "million barrels";
+    else
+        popupValue = "No Data"
+
     //add formatted attribute to popup content string
     var year = attribute.split("_")[1];
-    popupContent += "<b>Oil production in " + year + ":</b> " + ((feature.properties[attribute]*1000)/1000000).toFixed(1) + " million barrels<br>";
+    popupContent += "<b>Oil production in " + year + ":</b> " + popupValue + "<br>";
 
     //bind the popup to the circle marker
     layer.bindPopup(popupContent, {
           offset: new L.Point(0,-geojsonMarkerOptions.radius)
       });
 
-    //return the circle marker to the L.geoJson pointToLayer option
+    //returns the circle marker to the L.geoJson pointToLayer option
     return layer;
 };
     
@@ -115,11 +123,12 @@ function createPropSymbols(data, attributes){
 
 function updatePropSymbols(attribute){
     map.eachLayer(function(layer){
-      console.log("here!");
+      console.log("Update Prop Symbols!");
 
-        if (layer.feature && layer.feature.properties[attribute]){
+        if (layer.feature && layer.feature.properties[attribute] >=0){
           //access feature properties
            var props = layer.feature.properties;
+           var attValue = props[attribute]
 
            //update each feature's radius based on new attribute values
            var radius = calcPropRadius(props[attribute]);
@@ -128,9 +137,15 @@ function updatePropSymbols(attribute){
            //add city to popup content string
            var popupContent = "<p><b>City:</b> " + props.City + "</p>";
 
+           var popupValue;
+           if (attValue > 0)
+                popupValue = ((attValue*1000)/1000000).toFixed(1) + "million barrels";
+            else
+                popupValue = "No Data"
+            
            //add formatted attribute to panel content string
            var year = attribute.split("_")[1];
-           popupContent += "<b>Oil production in " + year + ":</b> " + ((props[attribute]*1000)/1000000).toFixed(1) + " million barrels<br>";
+           popupContent += "<b>Oil production in " + year + ":</b> " + popupValue + "<br>";
 
            //update popup with new content
            popup = layer.getPopup();
@@ -161,6 +176,7 @@ function processData(data){
 
 
 function createSequenceControls(attributes){
+    var currentYear = []
     //create range input element (slider)
     var slider = "<input class='range-slider' type='range'></input>";
     document.querySelector("#panel").insertAdjacentHTML('beforeend',slider);
@@ -186,20 +202,23 @@ function createSequenceControls(attributes){
             var index = document.querySelector('.range-slider').value;
             //increment or decrement depending on button clicked
             if (step.id == 'forward'){
-                index++;
+                index=Number(index) + 5; //Roll forward for 5 years
+                console.log(index)
                 //if past the last attribute, wrap around to first attribute
                 index = index > 39 ? 0 : index;
             } else if (step.id == 'reverse'){
-                index--;
+                index=Number(index) - 1; //Roll backwards for one year
+
                 //if past the first attribute, wrap around to last attribute
                 index = index < 0 ? 39 : index;
             };
-
+            
             //update slider
             document.querySelector('.range-slider').value = index;
 
             //pass new attribute to update symbols
             updatePropSymbols(attributes[index]);
+            
         })
     })
 
@@ -211,7 +230,11 @@ function createSequenceControls(attributes){
         //pass new attribute to update symbols
         updatePropSymbols(attributes[index]);
     });
+    return console.log('Year: ', currentYear);
 };
+
+
+
 
 
 //Import GeoJSON data

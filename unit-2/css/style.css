@@ -6,15 +6,16 @@
     height: 500px;    
     width: 75%;
     display: inline-block;
-    }
-    #panel {  
-        width: 20%;  
-        padding: 10px;  
-        display: inline-block;  
-        vertical-align: top;  
-        text-align: center;  
-        line-height: 42px;  
-    }  
+}
+
+#panel {  
+    width: 20%;  
+    padding: 10px;  
+    display: inline-block;  
+    vertical-align: top;  
+    text-align: center;  
+    line-height: 42px;
+}
     
 .range-slider {  
     width: 55%;
