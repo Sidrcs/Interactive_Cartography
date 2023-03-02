@@ -25,7 +25,6 @@ function createMap(){
     //calling HTML elements
     document.getElementById('mycontent').innerHTML = 'Oil Production Map of U.S 1981 - 2021';
     document.getElementById('credits').innerHTML = 'Ⓒ Sid (ramavajjala@wisc.edu)';
-    document.getElementById('panelOne').innerHTML = 'Now, you are in the year: ' + currentYearFunc();
 };
 
 function calculateMinValue(data){
@@ -54,7 +53,7 @@ function calcPropRadius(attValue) {
 
     if (attValue === 0) {
         // assign radius of 1 for zero attribute values
-        return 20;
+        return minRadius;
     } else {
         // perform Flannery Appearance Compensation formula for non-zero attribute values
         var radius = 1.0083 * Math.pow(attValue/minValue,0.5715) * minRadius;
@@ -173,7 +172,7 @@ function processData(data){
     return attributes;
 };
 
-
+var currentYear;
 function createSequenceControls(attributes){
     //create range input element (slider)
     var slider = "<input class='range-slider' type='range'></input>";
@@ -210,13 +209,12 @@ function createSequenceControls(attributes){
                 //if past the first attribute, wrap around to last attribute
                 index = index < 0 ? 39 : index;
             };
-            
             //update slider
             document.querySelector('.range-slider').value = index;
+            currentYear = ((attributes[index].split('_')[1]));
 
             //pass new attribute to update symbols
             updatePropSymbols(attributes[index]);
-            var currentYear = ((attributes[index].split('_')[1]));
         })
     })
     //input listener for slider
@@ -227,9 +225,8 @@ function createSequenceControls(attributes){
         //pass new attribute to update symbols
         updatePropSymbols(attributes[index]);
     });
+    
 };
-
-
 
 //Import GeoJSON data
 function getData(map){
