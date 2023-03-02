@@ -25,7 +25,7 @@ function createMap(){
     //calling HTML elements
     document.getElementById('mycontent').innerHTML = 'Oil Production Map of U.S 1981 - 2021';
     document.getElementById('credits').innerHTML = 'Ⓒ Sid (ramavajjala@wisc.edu)';
-    document.getElementById('panelOne').innerHTML = 'Now, you are in the year: ';
+    document.getElementById('panelOne').innerHTML = 'Now, you are in the year: ' + currentYearFunc();
 };
 
 function calculateMinValue(data){
@@ -68,7 +68,6 @@ function pointToLayer(feature, latlng, attributes){
 
     //Determine which attribute to visualize with proportional symbols
     var attribute = attributes[0];
-    console.log(attribute);
 
     //create marker options
     var geojsonMarkerOptions = {
@@ -176,7 +175,6 @@ function processData(data){
 
 
 function createSequenceControls(attributes){
-    var currentYear = []
     //create range input element (slider)
     var slider = "<input class='range-slider' type='range'></input>";
     document.querySelector("#panel").insertAdjacentHTML('beforeend',slider);
@@ -218,10 +216,9 @@ function createSequenceControls(attributes){
 
             //pass new attribute to update symbols
             updatePropSymbols(attributes[index]);
-            
+            var currentYear = ((attributes[index].split('_')[1]));
         })
     })
-
     //input listener for slider
     document.querySelector('.range-slider').addEventListener('input', function(){
         //get the new index value
@@ -230,10 +227,7 @@ function createSequenceControls(attributes){
         //pass new attribute to update symbols
         updatePropSymbols(attributes[index]);
     });
-    return console.log('Year: ', currentYear);
 };
-
-
 
 
 
