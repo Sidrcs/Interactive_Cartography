@@ -25,6 +25,8 @@ function createMap(){
     //calling HTML elements
     document.getElementById('mycontent').innerHTML = 'Oil Production Map of U.S 1981 - 2021';
     document.getElementById('credits').innerHTML = 'Ⓒ Sid (ramavajjala@wisc.edu)';
+    document.getElementById('panel').insertAdjacentHTML('beforeend',"<p id ='year'> Now, you are in the year: </p>");
+    document.getElementById('panel').insertAdjacentHTML('beforeend',"<p id = 'text'> Forward (+5 yrs), backward (-1 yr) </p>")
 };
 
 function calculateMinValue(data){
@@ -120,6 +122,7 @@ function createPropSymbols(data, attributes){
 
 
 function updatePropSymbols(attribute){
+    document.getElementById('year').innerHTML = "Now, you are in the year: <b>" + attribute.split('_')[1] + "</b>";
     map.eachLayer(function(layer){
       console.log("Update Prop Symbols!");
 
@@ -172,7 +175,7 @@ function processData(data){
     return attributes;
 };
 
-var currentYear;
+
 function createSequenceControls(attributes){
     //create range input element (slider)
     var slider = "<input class='range-slider' type='range'></input>";
@@ -211,7 +214,6 @@ function createSequenceControls(attributes){
             };
             //update slider
             document.querySelector('.range-slider').value = index;
-            currentYear = ((attributes[index].split('_')[1]));
 
             //pass new attribute to update symbols
             updatePropSymbols(attributes[index]);
@@ -225,8 +227,8 @@ function createSequenceControls(attributes){
         //pass new attribute to update symbols
         updatePropSymbols(attributes[index]);
     });
-    
 };
+
 
 //Import GeoJSON data
 function getData(map){
