@@ -4,21 +4,16 @@ var map;
 var minValue;
 
 function createMap(){
-    
+
     //create the map
     map = L.map('map', {
         center: [41.25, -99.29],
-        minZoom: 4, //setting min zoom level
+        minZoom: 3, //setting min zoom level
         maxZoom: 7, //setting max zoom level
-        zoom:4,
-        maxBounds: bounds
+        zoom:4
     });
 
-    var bounds = L.latLngBounds(
-        L.latLng(14.6017, -170.1467), // Southwest corner (American Samoa)
-        L.latLng(71.7069, -52.9394) // Northeast corner (Greenland)
-    );
-
+    L.control.scale().addTo(map);
 
     //add Carto base tilelayer
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
@@ -209,25 +204,11 @@ function createSequenceControls(attributes){
 
     map.addControl(new SequenceControl());    // add listeners after adding control
 
-    /*
-    //create range input element (slider)
-    var slider = "<input class='range-slider' type='range'></input>";
-    document.querySelector("#panel").insertAdjacentHTML('beforeend',slider);*/
-
     //set slider attributes
     document.querySelector(".range-slider").max = 39;
     document.querySelector(".range-slider").min = 0;
     document.querySelector(".range-slider").value = 0;
     document.querySelector(".range-slider").step = 1;
-
-    /*
-    //add step buttons
-    document.querySelector('#panel').insertAdjacentHTML('beforeend','<button class="step" id="reverse"></button>');
-    document.querySelector('#panel').insertAdjacentHTML('beforeend','<button class="step" id="forward"></button>');
-
-    //replace button content with images
-    document.querySelector('#reverse').insertAdjacentHTML('beforeend',"<img src='img/reverse.png'>")
-    document.querySelector('#forward').insertAdjacentHTML('beforeend',"<img src='img/forward.png'>") */
 
     var steps = document.querySelectorAll('.step');
 

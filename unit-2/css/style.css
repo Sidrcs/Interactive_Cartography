@@ -5,7 +5,7 @@
 #map {    
     height: 500px;    
     width: 100%;
-    /* display: inline-block;*/
+    display: inline-block;
 }
 
 /*
@@ -18,17 +18,34 @@
     line-height: 42px;
 }*/
 
+.sequence-control-container {  
+    width: 350px;  
+    height: 30px;  
+    background-color: rgba(255,255,255,0.8);  
+    padding: 10px;  
+    line-height: 45px;  
+    text-align: center;  
+    border: solid gray 1px;  
+    box-shadow: 3px 3px 3px lightgray
+} 
     
-.range-slider {  
-    width: 55%;
-}  
-    
+/* Add some basic styles to the range slider */
+.range-slider {
+    width: 200px;
+    height: 10px;
+  }
+  
+/* Mouse-over effects */
+.slider:hover {
+    opacity: 2; /* Fully shown on mouse-over */
+  }
+
 .step {  
     width: 20%;
 }  
     
 .step img {  
-    width: 35px; 
+    width: 30px; 
     height:20px
 }
 
