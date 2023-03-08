@@ -8,9 +8,9 @@ function createMap(){
 
     //create the map
     map = L.map('map', {
-        center: [41.25, -99.29],
-        minZoom: 3, //setting min zoom level
-        maxZoom: 5, //setting max zoom level
+        center: [45.635, -101.936],
+        minZoom: 4, //setting min zoom level
+        maxZoom: 6, //setting max zoom level
         zoom:4,
     });
 
@@ -105,7 +105,7 @@ function pointToLayer(feature, latlng, attributes){
     //For each feature, determine its value for the selected attribute
     var attValue = Number(feature.properties[attribute]);
 
-    //Give each feature's circle marker a radius based on its attribute value
+    //Assign radius to marker based on attribute value
     geojsonMarkerOptions.radius = calcPropRadius(attValue);
 
     //create circle marker layer
@@ -286,7 +286,7 @@ function calcStats(data){
               //get production value for current year
               var value = city.properties["prod_"+ String(year)];
               //if the value is non-zero, add it to the allValues array
-              if (Number(value) > 0) {
+              if (Number(value) >20000) {
                 allValues.push(value);
               }
         }
@@ -343,7 +343,7 @@ function createLegend(attributes){
 
                 //Assigning radius (r) and center of y value (cy) attributes  
                 var radius = calcPropRadiusLegend(dataStats[circles[i]]);  
-                var cy = 59 - radius;  
+                var cy = 60 - radius;  
 
                 //circle string  
                 svg += '<circle class="legend-circle" id="' + circles[i] + '" r="' + radius + '"cy="' + cy + '" fill="#969696" fill-opacity="0.7" stroke="#525252" cx="30"/>';  
