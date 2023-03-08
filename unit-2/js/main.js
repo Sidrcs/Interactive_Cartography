@@ -2,6 +2,7 @@
 //declare map var in global scope
 var map;
 var minValue;
+var dataStats = {};
 
 function createMap(){
 
@@ -25,10 +26,8 @@ function createMap(){
     getData(map);
 
     //calling HTML elements
-    document.getElementById('mycontent').innerHTML = 'Oil Production Map of U.S 1981 - 2021';
+    document.getElementById('mycontent').innerHTML = 'Oil Production Map of U.S 1981 - 2021';     
     document.getElementById('credits').innerHTML = 'Ⓒ Sid (ramavajjala@wisc.edu)';
-    document.getElementById('panel').insertAdjacentHTML('beforeend',"<p id ='year'> Now, you are in the year: </p>");
-    document.getElementById('panel').insertAdjacentHTML('beforeend',"<p id = 'text'> Forward (+5 yrs), backward (-1 yr) </p>")
 };
 
 function calculateMinValue(data){
@@ -122,11 +121,11 @@ function createPropSymbols(data, attributes){
     }).addTo(map);
 };
 
-
 function updatePropSymbols(attribute){
-    document.getElementById('year').innerHTML = "Now, you are in the year: <b>" + attribute.split('_')[1] + "</b>";
+
+    //document.getElementById('year').innerHTML = attribute.split('_')[1];
+
     map.eachLayer(function(layer){
-      console.log("Update Prop Symbols!");
 
         if (layer.feature && layer.feature.properties[attribute] >=0){
           //access feature properties
@@ -176,7 +175,6 @@ function processData(data){
     //array of prod_[year] names
     return attributes;
 };
-
 
 function createSequenceControls(attributes){
 
@@ -244,6 +242,73 @@ function createSequenceControls(attributes){
     });
 };
 
+function calcStats(data){
+    //create empty array to store all data values
+    var allValues = [];
+    //loop through each city
+    for(var city of data.features){
+        //loop through each year
+        for(var year = 1981; year <= 2021; year+=1){
+              //get production value for current year
+              var value = city.properties["prod_"+ String(year)];
+              //if the value is non-zero, add it to the allValues array
+              if (Number(value) > 0) {
+                allValues.push(value);
+              }
+        }
+    }
+
+    //get min, max, mean stats for our array
+    dataStats.min = Math.min(...allValues);
+    dataStats.max = Math.max(...allValues);
+
+    //calculate meanValue
+    var sum = allValues.reduce(function(a, b){return a+b;});
+    dataStats.mean = sum/ allValues.length;
+
+}
+
+function createLegend(attributes){
+    var LegendControl = L.Control.extend({
+        options: {
+            position: 'bottomright'
+        },
+        
+        onAdd: function () {
+            // create the control container with a particular class name
+            var container = L.DomUtil.create("div", "legend-control-container");
+
+            container.innerHTML = '<p class="temporalLegend">Oil production in <span class="year"> 1981 </span></p>';
+
+            //Step 1: start attribute legend svg string
+            var svg = '<svg id="attribute-legend" width="130px" height="130px">';
+
+            ///array of circle names to base loop on  
+            var circles = ["max", "mean", "min"]; 
+
+            //Step 2: loop to add each circle and text to svg string  
+            for (var i=0; i<circles.length; i++){  
+
+            //Step 3: assign the r and cy attributes  
+                var radius = calcPropRadius(dataStats[circles[i]]);  
+                var cy = 130 - radius;  
+
+            //circle string  
+                svg += '<circle class="legend-circle" id="' + circles[i] + '" r="' + radius + '"cy="' + cy + '" fill="#969696" fill-opacity="0.7" stroke="#525252" cx="65"/>';  
+            };  
+
+            //close svg string  
+            svg += "</svg>"; 
+            //add attribute legend svg to container
+            container.insertAdjacentHTML('beforeend',svg);
+
+            return container;
+
+        }
+    });
+
+    map.addControl(new LegendControl());
+};
 
 //Import GeoJSON data
 function getData(map){
@@ -254,11 +319,14 @@ function getData(map){
         })
         .then(function(json){
             var attributes = processData(json)
+            calcStats(json); 
+            
             //calculate minimum data value
             minValue = calculateMinValue(json);
             //call function to create proportional symbols
             createPropSymbols(json, attributes);
             createSequenceControls(attributes);
+            createLegend(attributes);    
         })
 };
 
