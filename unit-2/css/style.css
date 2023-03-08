@@ -8,16 +8,6 @@
     /*display: inline-block;*/
 }
 
-/*
-#panel {  
-    width: 20%;  
-    padding: 10px;  
-    display: inline-block;  
-    vertical-align: top;  
-    text-align: center;  
-    line-height: 42px;
-}*/
-
 .sequence-control-container {  
     width: 350px;  
     height: 30px;  
@@ -46,7 +36,7 @@
   
 /* Mouse-over effects */
 .slider:hover {
-    opacity: 2; /* Fully shown on mouse-over */
+    opacity: 2;
 }
 
 .step {  
