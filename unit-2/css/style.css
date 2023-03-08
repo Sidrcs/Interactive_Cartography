@@ -23,7 +23,7 @@
     height: 30px;  
     background-color: rgba(255,255,255,0.8);  
     padding: 10px;  
-    line-height: 45px;  
+    line-height: 25px;  
     text-align: center;  
     border: solid gray 1px;  
     box-shadow: 3px 3px 3px lightgray
@@ -31,9 +31,7 @@
 
 .legend-control-container {  
     width: 150px;
-    height: 110px; 
     font-family: Helvetica, sans-serif;
-    font-weight: bold;
     text-align: center;
     background-color: rgba(255,255,255,0.8);  
     padding: 10px;   
@@ -43,13 +41,13 @@
 /* Add some basic styles to the range slider */
 .range-slider {
     width: 200px;
-    height: 10px;
-  }
+    height: 5px;
+}
   
 /* Mouse-over effects */
 .slider:hover {
     opacity: 2; /* Fully shown on mouse-over */
-  }
+}
 
 .step {  
     width: 20%;
@@ -73,17 +71,22 @@
 
 #credits{
     margin-top: 9px;
-    font-family: 'Lato';
-    color: #bdbdbd6b;
+    font-family: Helvetica, sans-serif;
+    color: #5452526b;
     text-align: center;
 }
 
 .temporalLegend{
+    -webkit-tap-highlight-color: transparent;
+    line-height: 1.5;
+    pointer-events: auto;
+    cursor: auto;
     font-size: 14px;
     font-family: Helvetica, sans-serif;
     font-weight: bold;
     text-align: center;
-
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 #mycontent{

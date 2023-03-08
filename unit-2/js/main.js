@@ -26,8 +26,8 @@ function createMap(){
     getData(map);
 
     //calling HTML elements
-    document.getElementById('mycontent').innerHTML = 'Oil Production Map of U.S 1981 - 2021';     
-    document.getElementById('credits').innerHTML = 'Ⓒ Sid (ramavajjala@wisc.edu)';
+    document.getElementById('mycontent').innerHTML =  'Crude Oil Production Map of the U.S  1981 - 2021';     
+    document.getElementById('credits').innerHTML = 'Forward (+5 yrs), backward (-1yr) | mil bbl = Million barrels';
 };
 
 function calculateMinValue(data){
@@ -122,7 +122,9 @@ function createPropSymbols(data, attributes){
 };
 
 function updatePropSymbols(attribute){
-
+    var year = attribute.split("_")[1];
+    //update temporal legend
+    document.querySelector("span.year").innerHTML = year
     //document.getElementById('year').innerHTML = attribute.split('_')[1];
 
     map.eachLayer(function(layer){
@@ -141,7 +143,7 @@ function updatePropSymbols(attribute){
 
            var popupValue;
            if (attValue > 0)
-                popupValue = ((attValue*1000)/1000000).toFixed(1) + "million barrels";
+                popupValue = ((attValue*1000)/1000000).toFixed(1) + " million barrels";
             else
                 popupValue = "No Data"
             
@@ -272,7 +274,7 @@ function calcStats(data){
 
 function calcPropRadiusLegend(attValue) {
     //constant factor adjusts symbol sizes evenly - set lowest as values explode
-    var minRadius = 0.007;
+    var minRadius = 0.0076;
 
     if (attValue === 0) {
         // assign radius of 1 for zero attribute values
@@ -314,7 +316,7 @@ function createLegend(attributes){
           
             
             //evenly space out labels            
-            var textY = i * 20 + 20;            
+            var textY = i * 20.5 + 19;            
 
             //text string            
             svg += '<text id="' + circles[i] + '-text" x="65" y="' + textY + '">' + (Math.round(dataStats[circles[i]]*1000)/1000000).toFixed(1) + " mil bbl" + '</text>';
