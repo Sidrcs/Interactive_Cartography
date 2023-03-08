@@ -265,8 +265,24 @@ function calcStats(data){
     //calculate meanValue
     var sum = allValues.reduce(function(a, b){return a+b;});
     dataStats.mean = sum/ allValues.length;
+    console.log(dataStats.min, dataStats.mean, dataStats.max)
 
 }
+
+
+function calcPropRadiusLegend(attValue) {
+    //constant factor adjusts symbol sizes evenly - set lowest as values explode
+    var minRadius = 0.007;
+
+    if (attValue === 0) {
+        // assign radius of 1 for zero attribute values
+        return minRadius;
+    } else {
+        // perform Flannery Appearance Compensation formula for non-zero attribute values
+        var radius = 1.0083 * Math.pow(attValue/minValue,0.5715) * minRadius;
+        return radius;
+    }
+};
 
 function createLegend(attributes){
     var LegendControl = L.Control.extend({
@@ -278,10 +294,10 @@ function createLegend(attributes){
             // create the control container with a particular class name
             var container = L.DomUtil.create("div", "legend-control-container");
 
-            container.innerHTML = '<p class="temporalLegend">Oil production in <span class="year"> 1981 </span></p>';
+            container.innerHTML = '<p class="temporalLegend">Production in <span class="year"> 1981 </span></p>';
 
             //Step 1: start attribute legend svg string
-            var svg = '<svg id="attribute-legend" width="130px" height="130px">';
+            var svg = '<svg id="attribute-legend" width="160px" height="60px">';
 
             ///array of circle names to base loop on  
             var circles = ["max", "mean", "min"]; 
@@ -290,12 +306,20 @@ function createLegend(attributes){
             for (var i=0; i<circles.length; i++){  
 
             //Step 3: assign the r and cy attributes  
-                var radius = calcPropRadius(dataStats[circles[i]]);  
-                var cy = 130 - radius;  
+                var radius = calcPropRadiusLegend(dataStats[circles[i]]);  
+                var cy = 59 - radius;  
 
             //circle string  
-                svg += '<circle class="legend-circle" id="' + circles[i] + '" r="' + radius + '"cy="' + cy + '" fill="#969696" fill-opacity="0.7" stroke="#525252" cx="65"/>';  
-            };  
+                svg += '<circle class="legend-circle" id="' + circles[i] + '" r="' + radius + '"cy="' + cy + '" fill="#969696" fill-opacity="0.7" stroke="#525252" cx="30"/>';  
+          
+            
+            //evenly space out labels            
+            var textY = i * 20 + 20;            
+
+            //text string            
+            svg += '<text id="' + circles[i] + '-text" x="65" y="' + textY + '">' + (Math.round(dataStats[circles[i]]*1000)/1000000).toFixed(1) + " mil bbl" + '</text>';
+            
+            };
 
             //close svg string  
             svg += "</svg>"; 
@@ -320,7 +344,6 @@ function getData(map){
         .then(function(json){
             var attributes = processData(json)
             calcStats(json); 
-            
             //calculate minimum data value
             minValue = calculateMinValue(json);
             //call function to create proportional symbols

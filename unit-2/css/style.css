@@ -30,15 +30,14 @@
 } 
 
 .legend-control-container {  
-    width: 150px; 
-    height: 200px; 
+    width: 150px;
+    height: 110px; 
+    font-family: Helvetica, sans-serif;
     font-weight: bold;
+    text-align: center;
     background-color: rgba(255,255,255,0.8);  
-    padding: 5px;  
-    line-height: 45px;  
-    text-align: center;  
-    border: solid gray 1px;  
-    box-shadow: 3px 3px 3px lightgray
+    padding: 10px;   
+    border: solid gray 1px
 }
     
 /* Add some basic styles to the range slider */
@@ -77,6 +76,14 @@
     font-family: 'Lato';
     color: #bdbdbd6b;
     text-align: center;
+}
+
+.temporalLegend{
+    font-size: 14px;
+    font-family: Helvetica, sans-serif;
+    font-weight: bold;
+    text-align: center;
+
 }
 
 #mycontent{
