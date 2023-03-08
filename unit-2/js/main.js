@@ -4,19 +4,26 @@ var map;
 var minValue;
 
 function createMap(){
-
+    
     //create the map
     map = L.map('map', {
         center: [41.25, -99.29],
-        zoom:4
+        minZoom: 4, //setting min zoom level
+        maxZoom: 7, //setting max zoom level
+        zoom:4,
+        maxBounds: bounds
     });
+
+    var bounds = L.latLngBounds(
+        L.latLng(14.6017, -170.1467), // Southwest corner (American Samoa)
+        L.latLng(71.7069, -52.9394) // Northeast corner (Greenland)
+    );
+
 
     //add Carto base tilelayer
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-	subdomains: 'abcd',
-    minZoom: 4, //setting min zoom level
-	maxZoom: 7 //setting max zoom level
+	subdomains: 'abcd'
     }).addTo(map);
 
     //call getData function
