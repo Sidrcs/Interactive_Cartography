@@ -4,10 +4,11 @@
 
 #map {    
     height: 500px;    
-    width: 75%;
-    display: inline-block;
+    width: 100%;
+    /* display: inline-block;*/
 }
 
+/*
 #panel {  
     width: 20%;  
     padding: 10px;  
@@ -15,7 +16,8 @@
     vertical-align: top;  
     text-align: center;  
     line-height: 42px;
-}
+}*/
+
     
 .range-slider {  
     width: 55%;
@@ -26,7 +28,8 @@
 }  
     
 .step img {  
-    width: 100%; 
+    width: 35px; 
+    height:20px
 }
 
 
