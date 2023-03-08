@@ -14,7 +14,9 @@ function createMap(){
         zoom:4
     });
 
-    L.control.scale().addTo(map);
+    L.control.scale({
+        position: 'topright'
+    }).addTo(map);
 
     //add Carto base tilelayer
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
@@ -27,7 +29,7 @@ function createMap(){
 
     //calling HTML elements
     document.getElementById('mycontent').innerHTML =  'Crude Oil Production in the U.S (1981 - 2021)';     
-    document.getElementById('credits').innerHTML = 'Forward button (+5 yrs), backward button (-1yr) | mil bbl = Million barrels';
+    document.getElementById('credits').innerHTML = 'Forward button (+5 yrs), backward button (-1yr) | Mbbl : Million barrels';
 };
 
 function calculateMinValue(data){
@@ -319,7 +321,7 @@ function createLegend(attributes){
             var textY = i * 20.5 + 19;            
 
             //text string            
-            svg += '<text id="' + circles[i] + '-text" x="65" y="' + textY + '">' + (Math.round(dataStats[circles[i]]*1000)/1000000).toFixed(1) + " mil bbl" + '</text>';
+            svg += '<text id="' + circles[i] + '-text" x="65" y="' + textY + '">' + (Math.round(dataStats[circles[i]]*1000)/1000000).toFixed(1) + " Mbbl" + '</text>';
             
             };
 
