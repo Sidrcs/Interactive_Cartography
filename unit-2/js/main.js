@@ -10,8 +10,8 @@ function createMap(){
     map = L.map('map', {
         center: [41.25, -99.29],
         minZoom: 3, //setting min zoom level
-        maxZoom: 7, //setting max zoom level
-        zoom:4
+        maxZoom: 5, //setting max zoom level
+        zoom:4,
     });
 
     L.control.scale({
@@ -53,17 +53,38 @@ function calculateMinValue(data){
 };
 
 function calcPropRadius(attValue) {
-    //constant factor adjusts symbol sizes evenly - set lowest as values explode
+    //constant factor adjusts symbol sizes evenly - set lowest as values explode in our case
     var minRadius = 0.015;
-
     if (attValue === 0) {
-        // assign radius of 1 for zero attribute values
+        // assign minRadius if the attribute value (production) is zero for a particular year
         return minRadius;
     } else {
         // perform Flannery Appearance Compensation formula for non-zero attribute values
         var radius = 1.0083 * Math.pow(attValue/minValue,0.5715) * minRadius;
         return radius;
     }
+};
+
+// Function to handle popup content using city, attribute ~ prod_[year]
+function createPopupContent(properties, attribute){
+    //City is added to pop up string
+    var popupContent = "<b>City:</b> " + properties.City + "<br>";
+
+    //converting attValue to a number
+    var attValue = Number(properties[attribute]);
+
+    //attValue is evaluated for No Data case and loaded into
+    var popupValue;
+    if (attValue > 0)
+        popupValue = ((attValue*1000)/1000000).toFixed(1);
+    else
+        popupValue = "No Data"
+
+    //Formatting the popup content
+    var year = attribute.split("_")[1];
+    popupContent += "<b>Production in " + year + ":</b> " + popupValue + " Million barrels";
+
+    return popupContent;
 };
 
 
@@ -91,17 +112,7 @@ function pointToLayer(feature, latlng, attributes){
     var layer = L.circleMarker(latlng, geojsonMarkerOptions);
 
     //build popup content string starting with city
-    var popupContent = "<p><b>City:</b> " + feature.properties.City + "</p>";
-
-    var popupValue;
-    if (attValue > 0)
-        popupValue = ((attValue*1000)/1000000).toFixed(1) + " million barrels";
-    else
-        popupValue = "No Data"
-
-    //add formatted attribute to popup content string
-    var year = attribute.split("_")[1];
-    popupContent += "<b>Oil production in " + year + ":</b> " + popupValue + "<br>";
+    var popupContent = createPopupContent(feature.properties, attribute);
 
     //bind the popup to the circle marker
     layer.bindPopup(popupContent, {
@@ -124,10 +135,10 @@ function createPropSymbols(data, attributes){
 };
 
 function updatePropSymbols(attribute){
+
     var year = attribute.split("_")[1];
-    //update temporal legend
+    //update temporal legend moving through the sequence
     document.querySelector("span.year").innerHTML = year
-    //document.getElementById('year').innerHTML = attribute.split('_')[1];
 
     map.eachLayer(function(layer){
 
@@ -141,17 +152,7 @@ function updatePropSymbols(attribute){
            layer.setRadius(radius);
 
            //add city to popup content string
-           var popupContent = "<p><b>City:</b> " + props.City + "</p>";
-
-           var popupValue;
-           if (attValue > 0)
-                popupValue = ((attValue*1000)/1000000).toFixed(1) + " million barrels";
-            else
-                popupValue = "No Data"
-            
-           //add formatted attribute to panel content string
-           var year = attribute.split("_")[1];
-           popupContent += "<b>Oil production in " + year + ":</b> " + popupValue + "<br>";
+           var popupContent = createPopupContent(props, attribute);
 
            //update popup with new content
            popup = layer.getPopup();
@@ -244,6 +245,35 @@ function createSequenceControls(attributes){
         //pass new attribute to update symbols
         updatePropSymbols(attributes[index]);
     });
+
+        //keyboard arrow key event listeners
+        document.addEventListener('keydown', function(event) {
+            var index = document.querySelector('.range-slider').value;
+    
+            if (event.code === 'ArrowRight') {
+                index=Number(index) + 5; //ArrowRight - forward for 5 years
+    
+                //if crosses high value of index, wrap around to start
+                index = index > 39 ? 0 : index;
+    
+                //update slider index position
+                document.querySelector('.range-slider').value = index;
+    
+                //pass new attribute to update symbols
+                updatePropSymbols(attributes[index]);
+            } else if (event.code === 'ArrowLeft') {
+                index=Number(index) - 1; //Arrowleft - backwards for one year
+    
+                //if crosses low value of index, wrap around to end
+                index = index < 0 ? 39 : index;
+    
+                //update slider
+                document.querySelector('.range-slider').value = index;
+    
+                //pass new attribute to update symbols
+                updatePropSymbols(attributes[index]);
+            }
+        });    
 };
 
 function calcStats(data){
