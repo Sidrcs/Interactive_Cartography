@@ -26,8 +26,8 @@ function createMap(){
     getData(map);
 
     //calling HTML elements
-    document.getElementById('mycontent').innerHTML =  'Crude Oil Production Map of the U.S  1981 - 2021';     
-    document.getElementById('credits').innerHTML = 'Forward (+5 yrs), backward (-1yr) | mil bbl = Million barrels';
+    document.getElementById('mycontent').innerHTML =  'Crude Oil Production in the U.S (1981 - 2021)';     
+    document.getElementById('credits').innerHTML = 'Forward button (+5 yrs), backward button (-1yr) | mil bbl = Million barrels';
 };
 
 function calculateMinValue(data){
@@ -93,7 +93,7 @@ function pointToLayer(feature, latlng, attributes){
 
     var popupValue;
     if (attValue > 0)
-        popupValue = ((attValue*1000)/1000000).toFixed(1) + "million barrels";
+        popupValue = ((attValue*1000)/1000000).toFixed(1) + " million barrels";
     else
         popupValue = "No Data"
 

@@ -72,6 +72,7 @@
 #credits{
     margin-top: 9px;
     font-family: Helvetica, sans-serif;
+    font-size: 14px;
     color: #5452526b;
     text-align: center;
 }
@@ -100,7 +101,7 @@
     margin-bottom: 9px;
     font-family: Georgia;
     font-size: 20px;
-    box-shadow: 3px 3px 3px lightgray;
+    box-shadow: 3px 3px 3px rgb(168, 168, 168);
 }
 
 body {
