@@ -11,9 +11,9 @@ function createMap(){
         center: [44.5, -100],
         minZoom: 4, //setting min zoom level
         maxZoom: 6, //setting max zoom level
-        zoom:4,
+        zoom:4
     });
-
+    
     L.control.scale({
         position: 'topright'
     }).addTo(map);
@@ -29,7 +29,7 @@ function createMap(){
 
     //calling HTML elements
     document.getElementById('mycontent').innerHTML =  'Crude Oil Production in the U.S (1981 - 2021)';     
-    document.getElementById('credits').innerHTML = 'Forward button (+5 yrs), backward button (-1yr) | Mbbl : Million barrels';
+    document.getElementById('credits').innerHTML = 'Forward button (+5 yrs), backward button (-1yr) | Mbbl : Million barrels <br>' + "<p> Data Source: <a href = 'https://www.eia.gov/dnav/pet/pet_crd_crpdn_adc_mbbl_a.htm'> U.S Energy Information Adiminstration</a> </p> <br>" + "<p> </p>";
 };
 
 function calculateMinValue(data){
@@ -47,7 +47,7 @@ function calculateMinValue(data){
               }
         }
     }
-    //get minimum value of our array
+    //get minimum value of nonZeroValues array
     var minValue = Math.min(...nonZeroValues);
     return minValue;
 };
@@ -100,7 +100,7 @@ function pointToLayer(feature, latlng, attributes){
         color: "#525252",
         weight: 1,
         opacity: 1,
-        fillOpacity: 0.7,
+        fillOpacity: 0.7
     };
     //For each feature, determine its value for the selected attribute
     var attValue = Number(feature.properties[attribute]);
@@ -286,7 +286,7 @@ function calcStats(data){
               //get production value for current year
               var value = city.properties["prod_"+ String(year)];
               //if the value is non-zero, add it to the allValues array
-              if (Number(value) >20000) {
+              if (Number(value) > 20000) {
                 allValues.push(value);
               }
         }
