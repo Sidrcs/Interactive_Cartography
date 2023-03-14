@@ -97,3 +97,28 @@
 body {
     background-color: #f0f0f0;
   }
+
+/* CSS style for mobile */
+@media only screen and (max-width: 600px) {
+    #map {
+      height: 300px;
+    }
+  
+    .sequence-control-container {
+      width: 80%;
+      margin: 0 auto;
+    }
+  
+    .temporalLegend {
+      font-size: 12px;
+    }
+  
+    #mycontent {
+      font-size: 16px;
+    }
+  
+    /* Hide forward and reverse buttons on mobile */
+    #forward, #reverse {
+      display: none;
+    }
+  }

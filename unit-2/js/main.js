@@ -132,7 +132,7 @@ function createPropSymbols(data, attributes){
 };
 
 function updatePropSymbols(attribute){
-
+    // returns date to the legend
     var year = attribute.split("_")[1];
     // update temporal legend moving through the sequence
     document.querySelector("span.year").innerHTML = year
@@ -184,7 +184,6 @@ function createSequenceControls(attributes){
         options: {
             position: 'bottomleft'
         },
-
         onAdd: function () {
             // create the control container div with a particular class name
             var container = L.DomUtil.create('div', 'sequence-control-container');
