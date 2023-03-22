@@ -1,5 +1,5 @@
 
-//L.map creates an instance of map object inside the <div> elemnt with id = 'map'
+//L.map creates an instance of map object inside the <div> element with id = 'map'
 var map = L.map('map').setView([40.64, -103.45],5)
 
 //L.tileLayer creates an instance of tile layer object using provided URL
