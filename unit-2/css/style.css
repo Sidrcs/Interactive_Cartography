@@ -2,6 +2,11 @@
     margin: 0.2em, 0;
 }
 
+@font-face {
+    font-family: 'Town70';
+    src: url(assets\town-70-accent-bold-1.ttf);
+}
+
 #map {    
     height: 500px;    
     width: 100%;
