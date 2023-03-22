@@ -7,18 +7,20 @@ var dataStats = {};
 function createMap(){
 
     // create the map
+    // L.map creates an instance of map object inside the <div> element with id = 'map'
     map = L.map('map', {
         center: [44.5, -100],
         minZoom: 4, // setting min zoom level
         maxZoom: 6, // setting max zoom level
         zoom:4
     });
-    
+
     L.control.scale({
         position: 'topright'
     }).addTo(map);
 
     // add Carto base tilelayer
+    // L.tileLayer creates an instance of tile layer object using provided URL
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 	subdomains: 'abcd'
@@ -68,7 +70,7 @@ function calcPropRadius(attValue) {
 // function to handle popup content using city, attribute ~ prod_[year]
 function createPopupContent(properties, attribute){
     // city is added to pop up string
-    var popupContent = "<b>City:</b> " + properties.City + "<br>";
+    var popupContent = "<b>City:</b> " + properties.City + " (<i>" + properties.State + "</i>)" + "<br>";
     // converting attValue to a number
     var attValue = Number(properties[attribute]);
     // attValue is evaluated for No Data case and loaded into
@@ -123,7 +125,7 @@ function pointToLayer(feature, latlng, attributes){
 
 // add circle markers for point features to the map
 function createPropSymbols(data, attributes){
-    // create a Leaflet GeoJSON layer and add it to the map
+    // create a leaflet geoJSON layer and add it to the map
     L.geoJson(data, {
         pointToLayer: function(feature, latlng){
             return pointToLayer(feature, latlng, attributes);
@@ -138,16 +140,13 @@ function updatePropSymbols(attribute){
     document.querySelector("span.year").innerHTML = year
 
     map.eachLayer(function(layer){
-
         if (layer.feature && layer.feature.properties[attribute] >=0){
           // access feature properties
            var props = layer.feature.properties;
            var attValue = props[attribute]
-
            // update each feature's radius based on new attribute values
            var radius = calcPropRadius(props[attribute]);
            layer.setRadius(radius);
-
            // add city to popup content string
            var popupContent = createPopupContent(props, attribute);
 
@@ -216,7 +215,7 @@ function createSequenceControls(attributes){
             var index = document.querySelector('.range-slider').value;
             // increment or decrement depending on button clicked
             if (step.id == 'forward'){
-                index=Number(index) + 5; //Roll forward for 5 years
+                index=Number(index) + 5; // roll forward for 5 years
                 console.log(index)
                 // if past the last attribute, wrap around to first attribute
                 index = index > 39 ? 0 : index;
@@ -368,10 +367,10 @@ function createLegend(attributes){
     map.addControl(new LegendControl());
 };
 
-// import GeoJSON data
+// import geoJSON data
 function getData(map){
     // load the data
-    fetch("data/oil_data_center.geojson")
+    fetch("data/Main_Oil_Data.geojson")
         .then(function(response){
             return response.json();
         })
