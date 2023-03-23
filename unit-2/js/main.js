@@ -5,23 +5,34 @@ var minValue;
 var dataStats = {};
 
 function createMap(){
-
+    // Calculating width and change zoom levels based on screen width
+    var width = window.innerWidth;
+    if (width > 764) {
+        var minZoom = 4;
+        var maxZoom = 6;
+        var zoom = 4;
+    }
+    else  {
+        var minZoom = 2; 
+        var maxZoom = 6;
+        var zoom = 3;
+    } 
     // create the map
     // L.map creates an instance of map object inside the <div> element with id = 'map'
     map = L.map('map', {
         center: [44.5, -100],
-        minZoom: 4, // setting min zoom level
-        maxZoom: 6, // setting max zoom level
-        zoom:4
+        minZoom: minZoom, // setting min zoom level
+        maxZoom: maxZoom, // setting max zoom level
+        zoom: zoom
     });
-
+    //Adding digital map scale using L.control method
     L.control.scale({
         position: 'topright'
     }).addTo(map);
 
     // add Carto base tilelayer
     // L.tileLayer creates an instance of tile layer object using provided URL
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 	subdomains: 'abcd'
     }).addTo(map);
@@ -81,7 +92,7 @@ function createPopupContent(properties, attribute){
         popupValue = "No Data"
     // formatting the popup content
     var year = attribute.split("_")[1];
-    popupContent += "<b>Production in " + year + ":</b> " + popupValue + " Million barrels";
+    popupContent += "Production in <b>" + year + ":</b> " + popupValue + " Million barrels";
 
     return popupContent;
 };
@@ -137,7 +148,7 @@ function updatePropSymbols(attribute){
     // returns date to the legend
     var year = attribute.split("_")[1];
     // update temporal legend moving through the sequence
-    document.querySelector("span.year").innerHTML = year
+    document.querySelector("span.year").innerHTML = "<b>" + year + "</b>"
 
     map.eachLayer(function(layer){
         if (layer.feature && layer.feature.properties[attribute] >=0){
@@ -281,7 +292,7 @@ function calcStats(data){
               // get production value for current year
               var value = city.properties["prod_"+ String(year)];
               // if the value is non-zero, add it to the allValues array
-              if (Number(value) > 20000) {
+              if (Number(value) > 60000) {
                 allValues.push(value);
               }
         }
@@ -316,16 +327,22 @@ function calcPropRadiusLegend(attValue) {
 };
 
 function createLegend(attributes){
+    var width = window.innerWidth;
+    if (width > 764)
+        var position = 'bottomright'
+    else    
+        var position = 'topright'
+   
     var LegendControl = L.Control.extend({
         options: {
-            position: 'bottomright' // legend placement
+            position: position // legend placement
         },
         
         onAdd: function () {
             // creating a new div element with a tag and loading into a container variable
             var container = L.DomUtil.create("div", "legend-control-container");
 
-            container.innerHTML = '<p class="temporalLegend">Production in <span class="year"> 1981 </span></p>';
+            container.innerHTML = '<p class="temporalLegend">Production in <span class="year"> <b>1981</b> </span></p>';
 
             // SVG attribute string for legend placement
             var svg = '<svg id="attribute-legend" width="160px" height="60px">';

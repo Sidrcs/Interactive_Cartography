@@ -2,9 +2,9 @@
     margin: 0.2em, 0;
 }
 
-@font-face {
-    font-family: 'Town70';
-    src: url(assets\town-70-accent-bold-1.ttf);
+.leaflet-container {
+    font-family: Helvetica, sans-serif;
+    font-size: 12px;
 }
 
 #map {    
@@ -16,21 +16,22 @@
 .sequence-control-container {  
     width: 350px;  
     height: 30px;  
-    background-color: rgba(255,255,255,0.8);  
+    background-color: rgba(216,220,220, 0.5);  
     padding: 10px;  
     line-height: 25px;  
     text-align: center;  
     border: solid gray 1px;  
-    box-shadow: 3px 3px 3px lightgray
+    box-shadow: 3px 3px 3px rgb(99, 99, 99)
 } 
 
 .legend-control-container {  
-    width: 150px;
+    width: 140px;
     font-family: Helvetica, sans-serif;
     text-align: center;
-    background-color: rgba(255,255,255,0.8);  
+    background-color: rgba(216, 220, 220, 0.5);
     padding: 10px;   
-    border: solid gray 1px
+    border: solid gray 1px;
+    box-shadow: 3px 3px 3px rgb(120, 120, 120)
 }
     
 /* Add some basic styles to the range slider */
@@ -79,7 +80,7 @@
     cursor: auto;
     font-size: 14px;
     font-family: Helvetica, sans-serif;
-    font-weight: bold;
+   /* font-weight: bold; */
     text-align: center;
     margin-top: 0px;
     margin-bottom: 0px;
@@ -106,7 +107,7 @@ body {
 /* CSS style for mobile */
 @media only screen and (max-width: 600px) {
     #map {
-      height: 300px;
+      height: 90vh
     }
   
     .sequence-control-container {
