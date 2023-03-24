@@ -140,9 +140,5 @@ body {
     #title {
       font-size: 16px;
     }
-  
-    /* Hide forward and reverse buttons on mobile */
-    #forward, #reverse {
-      display: none;
-    }
+    
   }
