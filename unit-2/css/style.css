@@ -122,15 +122,6 @@ body {
       height: 400px;
     }
 
-    .range-slider {
-        width: 100px;
-        height: 7px;
-    }
-
-    .sequence-control-container {
-      width: 80%;
-    }
-  
     .temporalLegend {
       font-size: 12px;
     }
