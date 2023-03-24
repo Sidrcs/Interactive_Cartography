@@ -107,7 +107,7 @@ body {
 /* CSS style for mobile */
 @media only screen and (max-width: 600px) {
     #map {
-      height: auto
+      height: 70vh
     }
   
     .sequence-control-container {
