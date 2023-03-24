@@ -95,7 +95,7 @@ function createPopupContent(properties, attribute){
         popupValue = "No Data"
     // formatting the popup content
     var year = attribute.split("_")[1];
-    popupContent += "Production in <b>" + year + ":</b> " + popupValue + " Million barrels";
+    popupContent += "Production in <b>" + year + ":</b> " + popupValue + " Mbbl";
 
     return popupContent;
 };
