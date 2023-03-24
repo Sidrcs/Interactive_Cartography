@@ -41,8 +41,11 @@ function createMap(){
     getData(map);
 
     // calling HTML elements
-    document.getElementById('mycontent').innerHTML =  'Crude Oil Production in the U.S (1981 - 2021)';     
-    document.getElementById('credits').innerHTML = 'Forward button (+5 yrs), backward button (-1yr) | Mbbl : Million barrels <br>' + "<p> Data Source: <a href = 'https://www.eia.gov/dnav/pet/pet_crd_crpdn_adc_mbbl_a.htm'> U.S Energy Information Adiminstration</a> | " + "Oil Rig icon : Noun Project </p>";
+    document.getElementById('title').innerHTML =  'Crude Oil Production in the U.S (1981 - 2020)'; 
+
+    document.getElementById('mapcontent').innerHTML = "<p><font size = '+2'>D</font>ue to recession in the west, there is a record decline in oil production in <b> 1981 </b> by 6% to previous year <sup> <a href = 'https://www.nytimes.com/1982/01/06/business/world-oil-o-utput-off-6-in-1981.html'> 1</a></sup> . Between 1981-2020, U.S oil imports remained mostly stable, anywhere between 200,000 - 400,000 thousand barrels/month <sup><a href = 'https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=PET&s=MTTIMUS1&f=M'>2</a></sup> . Interestingly, The production decline in <b> Alaska </b> is compensated by <b> North Dakota </b>. While <b> Texas </b> remained the top producer, there are approximately <b>18 least-producing states</b>. <sup><a href = 'https://worldpopulationreview.com/state-rankings/oil--by-state'>3</a></sup></p>";
+
+    document.getElementById('credits').innerHTML = 'Forward button (+4 yrs), backward button (-1yr) | Mbbl : Million barrels <br>' + "<p> Data Source: <a href = 'https://www.eia.gov/dnav/pet/pet_crd_crpdn_adc_mbbl_a.htm'> U.S Energy Information Adiminstration</a> | " + "Oil Rig icon : Noun Project |  Cartographer : <a href = 'https://sidrcs.github.io/maps/index.html'>Siddharth Ramavajjala</a> (ramavajjala@wisc.edu) </p>";
 };
 
 function calculateMinValue(data){
@@ -81,7 +84,7 @@ function calcPropRadius(attValue) {
 // function to handle popup content using city, attribute ~ prod_[year]
 function createPopupContent(properties, attribute){
     // city is added to pop up string
-    var popupContent = "<b>City:</b> " + properties.City + " (<i>" + properties.State + "</i>)" + "<br>";
+    var popupContent = "<b>State:</b> " + properties.State + "<br>";
     // converting attValue to a number
     var attValue = Number(properties[attribute]);
     // attValue is evaluated for No Data case and loaded into
@@ -226,7 +229,7 @@ function createSequenceControls(attributes){
             var index = document.querySelector('.range-slider').value;
             // increment or decrement depending on button clicked
             if (step.id == 'forward'){
-                index=Number(index) + 5; // roll forward for 5 years
+                index=Number(index) + 4; // roll forward for 4 years
                 console.log(index)
                 // if past the last attribute, wrap around to first attribute
                 index = index > 39 ? 0 : index;
@@ -257,7 +260,7 @@ function createSequenceControls(attributes){
             var index = document.querySelector('.range-slider').value;
     
             if (event.code === 'ArrowRight') {
-                index=Number(index) + 5; //ArrowRight - forward for 5 years
+                index=Number(index) + 4; //ArrowRight - forward for 4 years
     
                 // if crosses high value of index, wrap around to start
                 index = index > 39 ? 0 : index;
