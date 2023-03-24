@@ -122,6 +122,17 @@ body {
       height: 400px;
     }
 
+    .sequence-control-container {  
+        width: 350px;  
+        height: 30px;  
+        background-color: rgba(216,220,220, 0.5);  
+        padding: 10px;  
+        line-height: 25px;  
+        text-align: center;  
+        border: solid gray 1px;  
+        box-shadow: 3px 3px 3px rgb(99, 99, 99)
+    } 
+
     .temporalLegend {
       font-size: 12px;
     }
