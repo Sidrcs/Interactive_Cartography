@@ -31,8 +31,7 @@ function createMap(){
             position: 'topright'
         }).addTo(map);
     }
-    else{
-        pass
+    else {
     }
     // add Carto base tilelayer
     // L.tileLayer creates an instance of tile layer object using provided URL
