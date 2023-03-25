@@ -26,13 +26,21 @@ function createMap(){
         zoom: zoom
     });
     //Adding digital map scale using L.control method
-    L.control.scale({
-        position: 'topright'
-    }).addTo(map);
+    if (width > 764) {
+        L.control.scale({
+            position: 'topright'
+        }).addTo(map);
+    }
     // add Carto base tilelayer
     // L.tileLayer creates an instance of tile layer object using provided URL
+    if (width > 764){
+        var attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    }
+    else {
+        attribution = ''
+    }
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	attribution: attribution,
 	subdomains: 'abcd'
     }).addTo(map);
 
@@ -42,7 +50,7 @@ function createMap(){
     // calling HTML elements
     document.getElementById('title').innerHTML =  'Crude Oil Production in the U.S (1981 - 2020)'; 
 
-    document.getElementById('mapcontent').innerHTML = "<p><font size = '+2'>D</font>ue to recession in the west, there is a record decline in oil production in <b> 1981 </b> by 6% to previous year <sup> <a href = 'https://www.nytimes.com/1982/01/06/business/world-oil-o-utput-off-6-in-1981.html'> 1</a></sup> . Between 1981-2020, U.S oil imports remained mostly stable, anywhere between 200,000 - 400,000 thousand barrels/month <sup><a href = 'https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=PET&s=MTTIMUS1&f=M'>2</a></sup> . Interestingly, The production decline in <b> Alaska </b> is compensated by <b> North Dakota </b>. While <b> Texas </b> remained the top producer, there are approximately <b>18 least-producing states</b>. <sup><a href = 'https://worldpopulationreview.com/state-rankings/oil--by-state'>3</a></sup></p>";
+    document.getElementById('mapcontent').innerHTML = "<p><font size = '+2'>D</font>ue to recession in the west, there is a record decline in oil production in <b> 1981 </b> by 6% to previous year <sup> <a href = 'https://www.nytimes.com/1982/01/06/business/world-oil-o-utput-off-6-in-1981.html'> 1</a></sup> . However, between 1981-2020, U.S oil imports remained mostly stable, anywhere between 200,000 - 400,000 thousand barrels/month <sup><a href = 'https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=PET&s=MTTIMUS1&f=M'>2</a></sup> . Interestingly, The production decline in <b> Alaska </b> is compensated by <b> North Dakota </b>. While <b> Texas </b> remained the top producer and there are approximately <b>18 least-producing states</b>. <sup><a href = 'https://worldpopulationreview.com/state-rankings/oil--by-state'>3</a></sup></p>";
 
     document.getElementById('credits').innerHTML = 'Forward button (+4 yrs), backward button (-1yr) | Mbbl : Million barrels <br>' + "<p> Data Source: <a href = 'https://www.eia.gov/dnav/pet/pet_crd_crpdn_adc_mbbl_a.htm'> U.S Energy Information Adiminstration</a> | " + "Oil Rig icon : Noun Project |  Cartographer : <a href = 'https://sidrcs.github.io/maps/index.html'>Siddharth Ramavajjala</a> (ramavajjala@wisc.edu) </p>";
 };
