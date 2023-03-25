@@ -26,13 +26,9 @@ function createMap(){
         zoom: zoom
     });
     //Adding digital map scale using L.control method
-    if (width > 764){
-        L.control.scale({
-            position: 'topright'
-        }).addTo(map);
-    }
-    else {
-    }
+    L.control.scale({
+        position: 'topright'
+    }).addTo(map);
     // add Carto base tilelayer
     // L.tileLayer creates an instance of tile layer object using provided URL
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
