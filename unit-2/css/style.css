@@ -112,6 +112,9 @@
     color: #636363;
 }
 
+/* For better text design*/
+
+/*
 #more {
     display: none;
 }
@@ -122,7 +125,8 @@
     background-color: rgba(216, 220, 220, 0.5);  
     border: solid gray 1px;
     box-shadow: 3px 3px 3px rgba(120, 120, 120, 0.568)
-}
+} 
+*/
 
 body {
     background-color: #f0f0f0;
