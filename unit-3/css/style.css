@@ -1,5 +1,11 @@
 /*Add CSS styles here*/
-axis path,
+.title {
+    font-family: sans-serif;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.axis path,
 .axis line {
     fill: none;
     stroke: black;

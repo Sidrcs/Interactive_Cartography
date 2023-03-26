@@ -64,7 +64,7 @@ window.onload = function(){
     ];
 
     var x = d3.scaleLinear() //create the scale
-        .range([90, 810]) //output min and max
+        .range([90, 750]) //output min and max
         .domain([0, 3]); //input min and max
 
     //find the minimum value of the array
@@ -93,6 +93,13 @@ window.onload = function(){
         ]);
 
     var yAxis = d3.axisLeft(y);
+
+    var title = container.append("text")
+        .attr("class", "title")
+        .attr("text-anchor", "middle")
+        .attr("x", 450)
+        .attr("y", 30)
+        .text("Major Cities Population (Wisconsin)");
 
     //create axis g element and add axis
     var axis = container.append("g")
@@ -126,4 +133,42 @@ window.onload = function(){
             return color(d.population);
         })
         .style("stroke", "#000"); //black circle stroke
+
+    //create format generator
+    var format = d3.format(",");
+
+    var labels = container.selectAll(".labels")
+        .data(cityPop)
+        .enter()
+        .append("text")
+        .attr("class", "labels")
+        .attr("text-anchor", "left")
+        .attr("y", function(d){
+            //vertical position centered on each circle
+            return y(d.population) + 5;
+        });
+
+    //first line of label
+    var nameLine = labels.append("tspan")
+        .attr("class", "nameLine")
+        .attr("x", function(d,i){
+            //horizontal position to the right of each circle
+            return x(i) + Math.sqrt(d.population * 0.01 / Math.PI) + 5;
+        })
+        .attr("dy", "-5")
+        .text(function(d){
+            return d.city;
+        });
+
+    //second line of label
+    var popLine = labels.append("tspan")
+        .attr("class", "popLine")
+        .attr("x", function(d,i){
+            //horizontal position to the right of each circle
+            return x(i) + Math.sqrt(d.population * 0.01 / Math.PI) + 5;
+        })
+        .attr("dy", "15") //vertical offset
+        .text(function(d){
+            return "Pop: " + format(d.population);
+        });
     }
