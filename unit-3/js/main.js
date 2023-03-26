@@ -79,11 +79,8 @@ window.onload = function(){
 
     //scale for circles center y coordinate
     var y = d3.scaleLinear()
-        .range([440, 95])
-        .domain([
-            minPop,
-            maxPop
-        ]);
+        .range([450, 50]) //was 440, 95
+        .domain([0, 700000]); //was minPop, maxPop
 
     var color = d3.scaleLinear()
         .range([
@@ -94,6 +91,14 @@ window.onload = function(){
             minPop, 
             maxPop
         ]);
+
+    var yAxis = d3.axisLeft(y);
+
+    //create axis g element and add axis
+    var axis = container.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(50, 0)")
+        .call(yAxis);
     
 
     //Example
