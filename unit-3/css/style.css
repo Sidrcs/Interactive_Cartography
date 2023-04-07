@@ -17,7 +17,20 @@
     fill: #E3DA93;
     stroke: #747474;
     stroke-width: 1px;
+    stroke-dasharray: 2,2;
+    border: medium solid #999;
 }
+
+/*
+.gratLines {
+    fill: none;
+    stroke: #999;
+    stroke-width: 1px;
+}
+
+.gratBackground {
+    fill: #D5E3FF;
+}*/
 
 .axis text {
     font-family: sans-serif;
