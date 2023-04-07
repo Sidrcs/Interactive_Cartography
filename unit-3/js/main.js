@@ -18,6 +18,12 @@ function setMap(){
         // testing whether the files are loaded correctly or not
         console.log(csvData);
         console.log(wisconsin);
+
+        // translate Wisconsin counties topojson
+        var wisconsinCounties = topojson.feature(wisconsin, wisconsin.objects.Wisc_counties);
+
+        console.log(wisconsinCounties);
+
     };
 
 };
