@@ -19,9 +19,9 @@ function setMap(){
         console.log(csvData);
         console.log(wisconsin);
 
-        // translate Wisconsin counties topojson
+        // translate Wisconsin counties from topojson to geojson
         var wisconsinCounties = topojson.feature(wisconsin, wisconsin.objects.Wisc_counties);
-
+        // To check the conversion result 
         console.log(wisconsinCounties);
 
     };
