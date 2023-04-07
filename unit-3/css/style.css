@@ -13,6 +13,12 @@
     shape-rendering: crispEdges;
 }
 
+.map {
+    fill: #E3DA93;
+    stroke: #747474;
+    stroke-width: 1px;
+}
+
 .axis text {
     font-family: sans-serif;
     font-size: 0.9em;
