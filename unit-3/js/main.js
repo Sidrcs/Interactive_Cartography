@@ -1,20 +1,20 @@
 window.onload = setMap();
 
 function setMap(){
-    //map frame dimensions
+    // map frame dimensions
     var width = 900,
         height = 500;
 
-    //create new svg container for the map
+    // create new svg container for the map
     var map = d3.select("body")
         .append("svg")
         .attr("class", "map")
         .attr("width", width)
         .attr("height", height);
 
-    //create Albers equal area conic projection centered on Wisconsin
+    // create Albers equal area conic projection centered on Wisconsin
     var projection = d3.geoAlbers()
-        .center([0, 44.42])
+        .center([0, 44.5])
         .rotate([90, -0.5, 0])
         .parallels([42.5, 47.5])
         .scale(4500)
@@ -46,38 +46,37 @@ function setMap(){
         console.log(wisconsin);
 
         /*
-        //create graticule generator
+        // create graticule generator
         var graticule = d3.geoGraticule()
             .step([2, 1]); //place graticule lines every 5 degrees of longitude and latitude
         
-        //create graticule background
+        // create graticule background
         var gratBackground = map.append("path")
-            //bind graticule background
+            // bind graticule background
             .datum(graticule.outline()) 
-            //assign class for styling
+            // assign class for styling
             .attr("class", "gratBackground") 
-            //project graticule
+            // project graticule
             .attr("d", path) 
 
-        //create graticule lines
-        //select graticule elements that will be created
+        // create graticule lines
+        // select graticule elements that will be created
         var gratLines = map.selectAll(".gratLines") 
-            //bind graticule lines to each element to be created
+            // bind graticule lines to each element to be created
             .data(graticule.lines()) 
-            //create an element for each datum
+            // create an element for each datum
             .enter() 
-            //append each element to the svg as a path element
+            // append each element to the svg as a path element
             .append("path") 
-            //assign class for styling
+            // assign class for styling
             .attr("class", "gratLines") 
-            //project graticule lines
-            .attr("d", path); 
-        */
+            // project graticule lines
+            .attr("d", path); */
 
         // translate Wisconsin counties from topojson to geojson
         var wisconsinCounties = topojson.feature(wisconsin, wisconsin.objects.Wisc_counties).features;
 
-        //add Wisconsin to map
+        // add Wisconsin to map
         var state = map.selectAll(".state")
             .data(wisconsinCounties)
             .enter()
@@ -87,7 +86,7 @@ function setMap(){
             })
             .attr("d", path);
 
-        // To check the conversion result 
+        // check the conversion result 
         console.log(wisconsinCounties);
 
     };
