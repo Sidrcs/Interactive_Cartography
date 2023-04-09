@@ -1,9 +1,4 @@
-/*Add CSS styles here*/
-.title {
-    font-family: sans-serif;
-    font-size: 1.5em;
-    font-weight: bold;
-}
+/* Activity 10: CSS style for D3 Map*/
 
 .axis path,
 .axis line {
@@ -17,11 +12,10 @@
     fill: #E3DA93;
     stroke: #747474;
     stroke-width: 1px;
-    /*stroke-dasharray: 2,2;*/
+    /* stroke-dasharray: 2,2; */
     border: medium solid #8e8e8e;
 }
 
-/*
 .gratLines {
     fill: none;
     stroke: #999;
@@ -30,7 +24,7 @@
 
 .gratBackground {
     fill: #D5E3FF;
-}*/
+}
 
 .axis text {
     font-family: sans-serif;
