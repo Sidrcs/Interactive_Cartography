@@ -49,7 +49,7 @@ function setMap(){
         var csvData = data[0], wisconsin = data[1];
 
         // place graticule on the map
-        setGraticule(map,path);
+        // setGraticule(map,path);
 
         // testing whether the files are loaded correctly or not
         console.log("CSV data below",csvData);
@@ -113,7 +113,7 @@ function joinData(wisconsinCounties, csvData){
 };
 
 function setEnumerationUnits(wisconsinCounties, map, path){
-    
+
      // add Wisconsin to map
     var state = map.selectAll(".state")
       .data(wisconsinCounties)
