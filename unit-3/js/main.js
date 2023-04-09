@@ -1,3 +1,10 @@
+(function(){
+
+//pseudo-global variable    
+var attrArray = ["Total households_2016-20", "Total persons_2016-20", "Households with children_ %_2016-20", 	"Children_ %_2016-20", 	"Seniors_ %_2016-20",	"Education less than high school_ %_2016-20",	"English spoken at home_ %_2016-20",	"Asian language spoken at home_ %_2016-20",	"White_ %_2016-20",	"African American_ %_2016-20",	"Asian_ %_2016-20",	"American Indian_ %_2016-20",	"Hispanic or Latino_ %_2016-20", "Noncitizens_ %_2016-20", "Workers driving/carpooling to work_ %_2016-20",	"Poverty rate (all persons)_ %_2020",	"Poverty rate (age 5-17)_ %_2020", "Poverty rate (all persons)_ %_2016-20",	"Poverty rate (children)_ %_2016-20", 	"Gini Index Of Income Inequality_2016-20",	"Households renting home_ %_2016-20",	"Households without vehicle_ %_2016-20"];
+
+var expressed = attrArray[0]; //initial attribute
+
 window.onload = setMap();
 
 function setMap(){
@@ -67,8 +74,6 @@ function setMap(){
         // translate Wisconsin counties from topojson to geojson
         var wisconsinCounties = topojson.feature(wisconsin, wisconsin.objects.Wisc_counties).features;
 
-        var attrArray = ["Total households_2016-20", "Total persons_2016-20", "Households with children_ %_2016-20", 	"Children_ %_2016-20", 	"Seniors_ %_2016-20",	"Education less than high school_ %_2016-20",	"English spoken at home_ %_2016-20",	"Asian language spoken at home_ %_2016-20",	"White_ %_2016-20",	"African American_ %_2016-20",	"Asian_ %_2016-20",	"American Indian_ %_2016-20",	"Hispanic or Latino_ %_2016-20", "Noncitizens_ %_2016-20", "Workers driving/carpooling to work_ %_2016-20",	"Poverty rate (all persons)_ %_2020",	"Poverty rate (age 5-17)_ %_2020", "Poverty rate (all persons)_ %_2016-20",	"Poverty rate (children)_ %_2016-20", 	"Gini Index Of Income Inequality_2016-20",	"Households renting home_ %_2016-20",	"Households without vehicle_ %_2016-20"]
-
         //loop through csv to assign each set of csv attribute values to geojson region
         for (var i=0; i<csvData.length; i++){
             var csvRegion = csvData[i]; //the current region
@@ -109,3 +114,5 @@ function setMap(){
     };
 
 };
+
+})();
