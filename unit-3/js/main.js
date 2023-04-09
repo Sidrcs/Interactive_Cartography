@@ -28,7 +28,7 @@ function setMap(){
     var promises = [];
 
     // d3.csv(), d3.json() methods read csv, topojson files
-    promises.push(d3.csv("data/D3_Lab_Wisc_Counties.csv"));
+    promises.push(d3.csv("data/wisconsin_counties_data.csv"));
     promises.push(d3.json("data/Wisc_counties.topojson"));
 
     // helps to load the data asynchronously
