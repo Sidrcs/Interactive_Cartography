@@ -3,7 +3,7 @@
 //pseudo-global variable    
 var attrArray = ["Total households_2016-20", "Total persons_2016-20", "Households with children_ %_2016-20", 	"Children_ %_2016-20", 	"Seniors_ %_2016-20",	"Education less than high school_ %_2016-20",	"English spoken at home_ %_2016-20",	"Asian language spoken at home_ %_2016-20",	"White_ %_2016-20",	"African American_ %_2016-20",	"Asian_ %_2016-20",	"American Indian_ %_2016-20",	"Hispanic or Latino_ %_2016-20", "Noncitizens_ %_2016-20", "Workers driving/carpooling to work_ %_2016-20",	"Poverty rate (all persons)_ %_2020",	"Poverty rate (age 5-17)_ %_2020", "Poverty rate (all persons)_ %_2016-20",	"Poverty rate (children)_ %_2016-20", 	"Gini Index Of Income Inequality_2016-20",	"Households renting home_ %_2016-20",	"Households without vehicle_ %_2016-20"];
 
-var expressed = attrArray[0]; //initial attribute
+var expressed = attrArray[1]; //initial attribute
 
 window.onload = setMap();
 
@@ -61,8 +61,13 @@ function setMap(){
         // join data of Wisconsin counties
         wisconsinCounties = joinData(wisconsinCounties,csvData);
 
+        // create a colorscale
+        var colorScale = makeColorScale(csvData);
+
         // add enumeration units to the map
-        setEnumerationUnits(wisconsinCounties, map, path)
+        setEnumerationUnits(wisconsinCounties, map, path, colorScale)
+
+       
     };
 };
 
@@ -113,8 +118,34 @@ function joinData(wisconsinCounties, csvData){
     return wisconsinCounties
     
 };
+//function to create color scale generator
+function makeColorScale(data){
+    var colorClasses = [
+        "#ffffcc",
+        "#a1dab4",
+        "#41b6c4",
+        "#2c7fb8",
+        "#253494"
+    ];
 
-function setEnumerationUnits(wisconsinCounties, map, path){
+    //create color scale generator
+    var colorScale = d3.scaleQuantile()
+        .range(colorClasses);
+
+    //build array of all values of the expressed attribute
+    var domainArray = [];
+    for (var i=0; i<data.length; i++){
+        var val = parseFloat(data[i][expressed]);
+        domainArray.push(val);
+    };
+
+    //assign array of expressed values as scale domain
+    colorScale.domain(domainArray);
+
+    return colorScale;
+};
+
+function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
 
      // add Wisconsin to map
     var state = map.selectAll(".state")
@@ -124,7 +155,10 @@ function setEnumerationUnits(wisconsinCounties, map, path){
       .attr("class", function(d){
           return "counties " + d.properties.NAMELSAD;
       })
-      .attr("d", path);
+      .attr("d", path)
+      .style("fill", function(d){
+        return colorScale(d.properties[expressed]);
+    });
 };
 
 })();
