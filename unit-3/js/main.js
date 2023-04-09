@@ -42,8 +42,8 @@ function setMap(){
         wisconsin = data[1];
 
         // testing whether the files are loaded correctly or not
-        console.log(csvData);
-        console.log(wisconsin);
+        console.log("CSV data below",csvData);
+        console.log("TopoJSON data below",wisconsin);
 
         /*
         // create graticule generator
@@ -51,30 +51,47 @@ function setMap(){
             .step([2, 1]); //place graticule lines every 5 degrees of longitude and latitude
         
         // create graticule background
-        var gratBackground = map.append("path")
-            // bind graticule background
-            .datum(graticule.outline()) 
-            // assign class for styling
-            .attr("class", "gratBackground") 
-            // project graticule
-            .attr("d", path) 
+        var gratBackground = map.append("path") 
+            .datum(graticule.outline()) // bind graticule background
+            .attr("class", "gratBackground") // assign class for styling
+            .attr("d", path) // project graticule
 
         // create graticule lines
-        // select graticule elements that will be created
-        var gratLines = map.selectAll(".gratLines") 
-            // bind graticule lines to each element to be created
-            .data(graticule.lines()) 
-            // create an element for each datum
-            .enter() 
-            // append each element to the svg as a path element
-            .append("path") 
-            // assign class for styling
-            .attr("class", "gratLines") 
-            // project graticule lines
-            .attr("d", path); */
+        var gratLines = map.selectAll(".gratLines")  // select graticule elements that will be created
+            .data(graticule.lines()) // bind graticule lines to each element to be created
+            .enter() // create an element for each datum
+            .append("path") // append each element to the svg as a path element
+            .attr("class", "gratLines") // assign class for styling
+            .attr("d", path); // project graticule lines */
 
         // translate Wisconsin counties from topojson to geojson
         var wisconsinCounties = topojson.feature(wisconsin, wisconsin.objects.Wisc_counties).features;
+
+        var attrArray = ["Total households_2016-20", "Total persons_2016-20", "Households with children_ %_2016-20", 	"Children_ %_2016-20", 	"Seniors_ %_2016-20",	"Education less than high school_ %_2016-20",	"English spoken at home_ %_2016-20",	"Asian language spoken at home_ %_2016-20",	"White_ %_2016-20",	"African American_ %_2016-20",	"Asian_ %_2016-20",	"American Indian_ %_2016-20",	"Hispanic or Latino_ %_2016-20", "Noncitizens_ %_2016-20", "Workers driving/carpooling to work_ %_2016-20",	"Poverty rate (all persons)_ %_2020",	"Poverty rate (age 5-17)_ %_2020", "Poverty rate (all persons)_ %_2016-20",	"Poverty rate (children)_ %_2016-20", 	"Gini Index Of Income Inequality_2016-20",	"Households renting home_ %_2016-20",	"Households without vehicle_ %_2016-20"]
+
+        //loop through csv to assign each set of csv attribute values to geojson region
+        for (var i=0; i<csvData.length; i++){
+            var csvRegion = csvData[i]; //the current region
+            var csvKey = csvRegion.NAMELSAD; //the CSV primary key
+
+            //loop through geojson regions to find correct region
+            for (var a=0; a<wisconsinCounties.length; a++){
+
+            var geojsonProps = wisconsinCounties[a].properties; //the current region geojson properties
+            var geojsonKey = geojsonProps.NAMELSAD; //the geojson primary key
+
+            //where primary keys match, transfer csv data to geojson properties object
+            if (geojsonKey == csvKey){
+
+                //assign all attributes and values
+                attrArray.forEach(function(attr){
+                    var val = parseFloat(csvRegion[attr]); //get csv attribute value
+                    geojsonProps[attr] = val; //assign attribute and value to geojson properties
+                    });
+
+                };
+            };
+        };
 
         // add Wisconsin to map
         var state = map.selectAll(".state")
@@ -87,7 +104,7 @@ function setMap(){
             .attr("d", path);
 
         // check the conversion result 
-        console.log(wisconsinCounties);
+        console.log("GeoJSON data below", wisconsinCounties);
 
     };
 
