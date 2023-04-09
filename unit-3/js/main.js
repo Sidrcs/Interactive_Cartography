@@ -7,6 +7,7 @@ var expressed = attrArray[0]; //initial attribute
 
 window.onload = setMap();
 
+// setup a choropleth map
 function setMap(){
     // map frame dimensions
     var width = 900,
@@ -45,17 +46,30 @@ function setMap(){
     // callback reads the output response of promises (read files - csv, topojson)
     // retrieves the file information
     function callback(data){
-        csvData = data[0];
-        wisconsin = data[1];
+        var csvData = data[0], wisconsin = data[1];
+
+        // place graticule on the map
+        setGraticule(map,path);
 
         // testing whether the files are loaded correctly or not
         console.log("CSV data below",csvData);
         console.log("TopoJSON data below",wisconsin);
 
-        /*
+        // translate Wisconsin counties from topojson to geojson
+        var wisconsinCounties = topojson.feature(wisconsin, wisconsin.objects.Wisc_counties).features;
+
+        // join data of Wisconsin counties
+        wisconsinCounties = joinData(wisconsinCounties,csvData);
+
+        // add enumeration units to the map
+        setEnumerationUnits(wisconsinCounties, map, path)
+    };
+};
+
+function setGraticule(map,path){
         // create graticule generator
         var graticule = d3.geoGraticule()
-            .step([2, 1]); //place graticule lines every 5 degrees of longitude and latitude
+            .step([2, 2]); //place graticule lines every 1 degree of longitude and latitude
         
         // create graticule background
         var gratBackground = map.append("path") 
@@ -69,50 +83,49 @@ function setMap(){
             .enter() // create an element for each datum
             .append("path") // append each element to the svg as a path element
             .attr("class", "gratLines") // assign class for styling
-            .attr("d", path); // project graticule lines */
+            .attr("d", path); // project graticule lines
+};
 
-        // translate Wisconsin counties from topojson to geojson
-        var wisconsinCounties = topojson.feature(wisconsin, wisconsin.objects.Wisc_counties).features;
+function joinData(wisconsinCounties, csvData){
+    //loop through csv to assign each set of csv attribute values to geojson region
+    for (var i=0; i<csvData.length; i++){
+        var csvRegion = csvData[i]; //the current region
+        var csvKey = csvRegion.NAMELSAD; //the CSV primary key
 
-        //loop through csv to assign each set of csv attribute values to geojson region
-        for (var i=0; i<csvData.length; i++){
-            var csvRegion = csvData[i]; //the current region
-            var csvKey = csvRegion.NAMELSAD; //the CSV primary key
+        //loop through geojson regions to find correct region
+        for (var a=0; a<wisconsinCounties.length; a++){
 
-            //loop through geojson regions to find correct region
-            for (var a=0; a<wisconsinCounties.length; a++){
+        var geojsonProps = wisconsinCounties[a].properties; //the current region geojson properties
+        var geojsonKey = geojsonProps.NAMELSAD; //the geojson primary key
 
-            var geojsonProps = wisconsinCounties[a].properties; //the current region geojson properties
-            var geojsonKey = geojsonProps.NAMELSAD; //the geojson primary key
+        //where primary keys match, transfer csv data to geojson properties object
+        if (geojsonKey == csvKey){
 
-            //where primary keys match, transfer csv data to geojson properties object
-            if (geojsonKey == csvKey){
-
-                //assign all attributes and values
-                attrArray.forEach(function(attr){
-                    var val = parseFloat(csvRegion[attr]); //get csv attribute value
-                    geojsonProps[attr] = val; //assign attribute and value to geojson properties
-                    });
-
-                };
-            };
+            //assign all attributes and values
+            attrArray.forEach(function(attr){
+                var val = parseFloat(csvRegion[attr]); //get csv attribute value
+                geojsonProps[attr] = val; //assign attribute and value to geojson properties
+            });
         };
-
-        // add Wisconsin to map
-        var state = map.selectAll(".state")
-            .data(wisconsinCounties)
-            .enter()
-            .append("path")
-            .attr("class", function(d){
-                return "counties " + d.properties.NAMELSAD;
-            })
-            .attr("d", path);
-
-        // check the conversion result 
-        console.log("GeoJSON data below", wisconsinCounties);
-
+        };
     };
+    return wisconsinCounties
+};
 
+function setEnumerationUnits(wisconsinCounties, map, path){
+    
+     // add Wisconsin to map
+    var state = map.selectAll(".state")
+      .data(wisconsinCounties)
+      .enter()
+      .append("path")
+      .attr("class", function(d){
+          return "counties " + d.properties.NAMELSAD;
+      })
+      .attr("d", path);
+
+  // check the conversion result 
+  console.log("GeoJSON data below", wisconsinCounties);
 };
 
 })();
