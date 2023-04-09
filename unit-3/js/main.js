@@ -109,7 +109,9 @@ function joinData(wisconsinCounties, csvData){
         };
         };
     };
+    console.log("GeoJSON info below", wisconsinCounties)
     return wisconsinCounties
+    
 };
 
 function setEnumerationUnits(wisconsinCounties, map, path){
@@ -123,9 +125,6 @@ function setEnumerationUnits(wisconsinCounties, map, path){
           return "counties " + d.properties.NAMELSAD;
       })
       .attr("d", path);
-
-  // check the conversion result 
-  console.log("GeoJSON data below", wisconsinCounties);
 };
 
 })();
