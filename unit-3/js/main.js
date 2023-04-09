@@ -10,7 +10,7 @@ window.onload = setMap();
 // setup a choropleth map
 function setMap(){
     // map frame dimensions
-    var width = 900,
+    var width = window.innerWidth * 0.5,
         height = 500;
 
     // create new svg container for the map
@@ -67,6 +67,8 @@ function setMap(){
         // add enumeration units to the map
         setEnumerationUnits(wisconsinCounties, map, path, colorScale)
 
+        //add coordinated visualization to the map
+        setChart(csvData, colorScale);
        
     };
 };
@@ -162,8 +164,21 @@ function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
             return colorScale(d.properties[expressed]);            
         } else {                
             return "#ccc";            
-        }    
-    });
+        }    });
+};
+
+//function to create coordinated bar chart
+function setChart(csvData, colorScale){
+    //chart frame dimensions
+    var chartWidth = window.innerWidth * 0.425,
+        chartHeight = 500;
+
+    //create a second svg element to hold the bar chart
+    var chart = d3.select("body")
+        .append("svg")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight)
+        .attr("class", "chart");
 };
 
 })();
