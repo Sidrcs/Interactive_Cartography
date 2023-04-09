@@ -10,8 +10,8 @@
 
 .map {
     fill: #E3DA93;
-    stroke: #898989;
-    stroke-width: 1px;
+    stroke: #323232;
+    stroke-width: 0.5px;
     /* stroke-dasharray: 2,2; */
     border: medium solid #8e8e8e;
 }
