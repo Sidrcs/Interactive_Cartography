@@ -122,10 +122,10 @@ function joinData(wisconsinCounties, csvData){
 function makeColorScale(data){
     var colorClasses = [
         "#ffffcc",
-        "#a1dab4",
-        "#41b6c4",
-        "#2c7fb8",
-        "#253494"
+        "#c2e699",
+        "#78c679",
+        "#31a354",
+        "#006837"
     ];
 
     //create color scale generator
@@ -156,8 +156,13 @@ function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
           return "counties " + d.properties.NAMELSAD;
       })
       .attr("d", path)
-      .style("fill", function(d){
-        return colorScale(d.properties[expressed]);
+      .style("fill", function(d){            
+        var value = d.properties[expressed];            
+        if(value) {                
+            return colorScale(d.properties[expressed]);            
+        } else {                
+            return "#ccc";            
+        }    
     });
 };
 
