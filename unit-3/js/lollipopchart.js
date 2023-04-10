@@ -1,3 +1,7 @@
+var attrArray = ["stfid",	"NAMELSAD",	"hh1620_est",	"persons1620_est",	"hhkids1620_est",	"kids1620_est",	"seniors1620_est",	"edlesshs1620_est",	"langeng1620_est",	"langasn1620_est",	"racewhite1620_est",	"raceaa1620_est",	"raceasian1620_est",	"raceamind1620_est",	"hispanic1620_est",	"noncitizens1620_est",	"drive1620_est",	"pratesaipe20",	"pratekidssaipe20",	"prateacs1620_est",	"pratekidsacs1620_est",	"gini1620_est",	"renters1620_est",	"noveh1620_est"];
+
+var expressed = attrArray[21]; //initial attribute
+
 // set the dimensions and margins of the graph
 const margin = {top: 10, right: 30, bottom: 40, left: 100},
     width = 1000 - margin.left - margin.right,
@@ -16,14 +20,15 @@ d3.csv("Data/wisconsin_counties_data.csv").then( function(data) {
 
   // Add X axis
   const x = d3.scaleLinear()
-    .domain([0, 13000])
+    .domain([0,0.5])
     .range([ 0, width]);
   svg.append("g")
     .attr("transform", `translate(0, ${height})`)
     .call(d3.axisBottom(x))
     .selectAll("text")
       .attr("transform", "translate(-10,0)rotate(-45)")
-      .style("text-anchor", "end");
+      .style("text-anchor", "end")
+      ;
 
 // Y axis
 const y = d3.scaleBand()
@@ -39,7 +44,7 @@ svg.selectAll("myline")
   .data(data)
   .enter()
   .append("line")
-    .attr("x1", function(d) { return x(d.hh1620_est); })
+    .attr("x1", function(d) { return x(parseFloat(d[expressed])); })
     .attr("x2", x(0))
     .attr("y1", function(d) { return y(d.NAMELSAD); })
     .attr("y2", function(d) { return y(d.NAMELSAD); })
@@ -50,7 +55,7 @@ svg.selectAll("mycircle")
   .data(data)
   .enter()
   .append("circle")
-    .attr("cx", function(d) { return x(d.hh1620_est); })
+    .attr("cx", function(d) { return x(parseFloat(d[expressed])); })
     .attr("cy", function(d) { return y(d.NAMELSAD); })
     .attr("r", "4")
     .style("fill", "#69b3a2")
