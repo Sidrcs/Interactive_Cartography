@@ -328,7 +328,7 @@ function setDotPlot(csvData, colorScale){
         .attr("x", 40)
         .attr("y", 40)
         .attr("class", "chartTitle")
-        .text( arrayDict[expressed]);
+        .text(arrayDict[expressed]);
 
     //create vertical axis generator
     var yAxis = d3.axisLeft()
