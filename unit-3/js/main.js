@@ -3,7 +3,7 @@
 //pseudo-global variable    
 var attrArray = ["stfid",	"NAMELSAD",	"hh1620_est",	"persons1620_est",	"hhkids1620_est",	"kids1620_est",	"seniors1620_est",	"edlesshs1620_est",	"langeng1620_est",	"langasn1620_est",	"racewhite1620_est",	"raceaa1620_est",	"raceasian1620_est",	"raceamind1620_est",	"hispanic1620_est",	"noncitizens1620_est",	"drive1620_est", "prateacs1620_est",	"pratekidsacs1620_est",	"gini1620_est",	"renters1620_est",	"noveh1620_est"];
 
-var arrayDict = {"stfid" : "Unique ID",	"NAMELSAD" : "County name",	"hh1620_est":"Households",	"persons1620_est":"Total persons",	"hhkids1620_est":"Household with children",	"kids1620_est":"Children",	"seniors1620_est":"Seniors",	"edlesshs1620_est":"Education less than high school",	"langeng1620_est":"English spoken at home",	"langasn1620_est":"Asian language spoken at home",	"racewhite1620_est":"White",	"raceaa1620_est":"African American",	"raceasian1620_est":"Asian",	"raceamind1620_est":"Native Americans",	"hispanic1620_est":"Hispanic",	"noncitizens1620_est":"Non-citizens",	"drive1620_est":"Workers driving or carpooling to work", "prateacs1620_est":"Poverty (all persons)",	"pratekidsacs1620_est":"Poverty(kids)",	"gini1620_est":"Gini index of income inequality",	"renters1620_est":"Households renting home", "noveh1620_est":"Households without vehicle"};
+var arrayDict = {"stfid" : "Unique ID",	"NAMELSAD" : "County name",	"hh1620_est":"Households",	"persons1620_est":"Total persons",	"hhkids1620_est":"Household with children",	"kids1620_est":"Children",	"seniors1620_est":"Seniors",	"edlesshs1620_est":"Education less than high school",	"langeng1620_est":"English spoken at home",	"langasn1620_est":"Asian language spoken at home",	"racewhite1620_est":"White", "raceaa1620_est":"African American", "raceasian1620_est":"Asian",	"raceamind1620_est":"Native Americans",	"hispanic1620_est":"Hispanic", "noncitizens1620_est":"Non-citizens",	"drive1620_est":"Workers driving or carpooling to work", "prateacs1620_est":"Poverty (all persons)",	"pratekidsacs1620_est":"Poverty(kids)",	"gini1620_est":"Gini index of income inequality",	"renters1620_est":"Households renting home", "noveh1620_est":"Households without vehicle"};
 
 var expressed = attrArray[19]; // loaded attribute based on index
 
@@ -71,9 +71,53 @@ function setMap(){
 
         //add coordinated visualization to the map
         setDotPlot(csvData, colorScale);
+
+        createDropdown(csvData);
        
     };
 };
+function createDropdown(csvData){
+    //add select element
+    var dropdown = d3.select("body")
+        .append("select")
+        .attr("class", "dropdown")
+        .on("change", function(){
+            changeAttribute(this.value, csvData)
+        });
+
+    //add initial option
+    var titleOption = dropdown.append("option")
+        .attr("class", "titleOption")
+        .attr("disabled", "true")
+        .text("Select Attribute");
+
+    //add attribute name options
+    var attrOptions = dropdown.selectAll("attrOptions")
+        .data(attrArray.slice(2))
+        .enter()
+        .append("option")
+        .attr("value", function(d){ return d })
+        .text(function(d){ return d });
+};
+
+//dropdown change event handler
+function changeAttribute(attribute, csvData) {
+    //change the expressed attribute
+    expressed = attribute;
+
+    //recreate the color scale
+    var colorScale = makeColorScale(csvData);
+
+    //recolor enumeration units
+    var regions = d3.selectAll(".regions").style("fill", function (d) {
+        var value = d.properties[expressed];
+        if (value) {
+            return colorScale(d.properties[expressed]);
+        } else {
+            return "#ccc";
+        }
+    });
+}
 
 function setGraticule(map,path){
         // create graticule generator
@@ -152,12 +196,13 @@ function makeColorScale(data){
 function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
 
      // add Wisconsin to map
-    var state = map.selectAll(".state")
+    var state = map.selectAll(".counties")
       .data(wisconsinCounties)
       .enter()
       .append("path")
       .attr("class", function(d){
-          return "counties " + d.properties.NAMELSAD;
+        console.log(d.properties.NAME)
+          return "counties " + d.properties.NAME;
       })
       .attr("d", path)
       .style("fill", function(d){            
