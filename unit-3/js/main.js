@@ -7,6 +7,21 @@ var arrayDict = {"stfid" : "Unique ID",	"NAMELSAD" : "County name",	"hh1620_est"
 
 var expressed = attrArray[19]; // loaded attribute based on index
 
+// create chart dimensions
+var chartWidth = window.innerWidth * 0.425,
+chartHeight = 473,
+leftPadding = 25,
+rightPadding = 2,
+topBottomPadding = 5,
+chartInnerWidth = chartWidth - leftPadding - rightPadding,
+chartInnerHeight = chartHeight - topBottomPadding * 2,
+translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
+
+// create a scale to size lines proportionally to frame and for axis
+var yScale = d3.scaleLinear()
+.range([463, 0])
+.domain([0, 0.6]);
+
 window.onload = setMap();
 
 // setup a choropleth map
@@ -69,13 +84,15 @@ function setMap(){
         // add enumeration units to the map
         setEnumerationUnits(wisconsinCounties, map, path, colorScale)
 
-        //add coordinated visualization to the map
+        // add dotplot visualization to the map
         setDotPlot(csvData, colorScale);
 
+        // add dropdown to the map
         createDropdown(csvData);
        
     };
 };
+
 function createDropdown(csvData){
     //add select element
     var dropdown = d3.select("body")
@@ -93,71 +110,12 @@ function createDropdown(csvData){
 
     //add attribute name options
     var attrOptions = dropdown.selectAll("attrOptions")
-        .data(attrArray.slice(2))
+        .data(attrArray)
         .enter()
         .append("option")
         .attr("value", function(d){ return d })
         .text(function(d){ return d });
 };
-
-//dropdown change event handler
-function changeAttribute(attribute, csvData) {
-    //change the expressed attribute
-    expressed = attribute;
-
-    //recreate the color scale
-    var colorScale = makeColorScale(csvData);
-
-    //recolor enumeration units
-    var regions = d3.selectAll(".counties").style("fill", function (d) {
-        var value = d.properties[expressed];
-        if (value) {
-            return colorScale(d.properties[expressed]);
-        } else {
-            return "#ccc";
-        }
-    });
-
-    var lines = chart.selectAll(".line")
-        .data(csvData)
-        .enter()
-        .append("rect")
-        .attr("class", function(d){
-            return "line " + d.NAMELSAD;
-        })
-        .attr("width", "0.5")
-        .attr("x", function(d, i){
-            return xScale(d.NAMELSAD) + leftPadding;
-        })
-        .attr("y", function(d, i){
-            return yScale(parseFloat(d[expressed])) + topBottomPadding;
-        })
-        .attr("height", function(d, i){
-            return 463 - yScale(parseFloat(d[expressed]));
-        });
-
-    // circles
-    var circles = chart.selectAll(".circle")
-        .data(csvData)
-        .join("circle")
-        .attr("cx", function(d){
-            return xScale(d.NAMELSAD) + leftPadding;
-        })
-        .attr("cy", function(d){
-            return yScale(parseFloat(d[expressed])) + topBottomPadding;
-        })
-        .attr("r", "4")
-        // recolor bars
-        .style("fill", function(d){            
-            var value = d[expressed];            
-            if(value) {                
-                return colorScale(value);            
-            } else {                
-                return "#ccc";            
-            }  
-        })
-        .attr("stroke", "#636363");
-}
 
 function setGraticule(map,path){
         // create graticule generator
@@ -362,13 +320,7 @@ function setDotPlot(csvData, colorScale){
      .attr("height", chartInnerHeight)
      .attr("transform", translate);
 
-     // create a scale for the x-axis
-    var xScale = d3.scalePoint()
-        .range([0, chartInnerWidth])
-        .domain(csvData.map(function(d) { return d.NAMELSAD; }))
-        .padding(1);
-
-    // create a scale to size bars proportionally to frame and for axis
+    // create a scale to size lines proportionally to frame and for axis
     var yScale = d3.scaleLinear()
         .range([463, 0])
         .domain([0, 0.6]);
@@ -378,16 +330,12 @@ function setDotPlot(csvData, colorScale){
         .data(csvData)
         .enter()
         .append("rect")
-        // .sort is not working - NEED FIX
-        .sort(function(a, b) {
-            return parseFloat(b[expressed]) - parseFloat(a[expressed])
-        })
         .attr("class", function(d){
             return "line " + d.NAMELSAD;
         })
         .attr("width", "0.5")
         .attr("x", function(d, i){
-            return xScale(d.NAMELSAD) + leftPadding;
+            return i * (chartInnerWidth / csvData.length) + (leftPadding+2.75)
         })
         .attr("y", function(d, i){
             return yScale(parseFloat(d[expressed])) + topBottomPadding;
@@ -400,8 +348,9 @@ function setDotPlot(csvData, colorScale){
      var circles = chart.selectAll(".circle")
         .data(csvData)
         .join("circle")
-        .attr("cx", function(d){
-            return xScale(d.NAMELSAD) + leftPadding;
+        .attr("cx", function(d, i) {
+            var xPosition =  i * (chartInnerWidth / csvData.length) + leftPadding + ((chartInnerWidth / csvData.length) / 2);
+            return (xPosition)
         })
         .attr("cy", function(d){
             return yScale(parseFloat(d[expressed])) + topBottomPadding;
@@ -410,11 +359,7 @@ function setDotPlot(csvData, colorScale){
         .style("fill", function(d){
             return colorScale(d[expressed])
         })
-        .attr("stroke", "#636363")
-        // .sort is not working - NEED FIX
-        .sort(function(a, b) {
-            return parseFloat(b[expressed]) - parseFloat(a[expressed])
-        });
+        .attr("stroke", "#636363");
 
     //create a text element for the chart title
     var chartTitle = chart.append("text")
@@ -439,6 +384,112 @@ function setDotPlot(csvData, colorScale){
         .attr("width", chartInnerWidth)
         .attr("height", chartInnerHeight)
         .attr("transform", translate);
+
+    // set line & circle positions, heights, and colors
+    updateChart(lines, circles, csvData.length, colorScale);
+};
+
+//dropdown change event handler
+function changeAttribute(attribute, csvData) {
+    //change the expressed attribute
+    expressed = attribute;
+
+    //recreate the color scale
+    var colorScale = makeColorScale(csvData);
+
+    //recolor enumeration units
+    var regions = d3.selectAll(".counties")
+    .transition()
+    .duration(1000)
+    .style("fill", function (d) {
+        var value = d.properties[expressed];
+        if (value) {
+            return colorScale(d.properties[expressed]);
+        } else {
+            return "#ccc";
+        }
+    });
+
+    // set lines for each county
+    var lines = chart.selectAll(".line")
+        .data(csvData)
+        .enter()
+        .append("rect")
+        .attr("class", function(d){
+            return "line " + d.NAMELSAD;
+        })
+        .attr("width", "0.5")
+        .attr("x", function(d, i){
+            return i * (chartInnerWidth / csvData.length) + (leftPadding+2.75)
+        })
+        .attr("y", function(d, i){
+            return yScale(parseFloat(d[expressed])) + topBottomPadding;
+        })
+        .attr("height", function(d, i){
+            return 463 - yScale(parseFloat(d[expressed]));
+        });
+
+    // circles
+    var circles = chart.selectAll(".circle")
+        .data(csvData)
+        .join("circle")
+        .attr("cx", function(d, i) {
+            var xPosition =  i * (chartInnerWidth / csvData.length) + leftPadding + ((chartInnerWidth / csvData.length) / 2);
+            return (xPosition)
+        })
+        .attr("cy", function(d){
+            return yScale(parseFloat(d[expressed])) + topBottomPadding;
+        })
+        .attr("r", "4")
+        // recolor circles
+        .style("fill", function(d){            
+            var value = d[expressed];            
+            if(value) {                
+                return colorScale(value);            
+            } else {                
+                return "#ccc";            
+            }  
+        })
+        .attr("stroke", "#636363");
+};
+
+//function to position, size, and color lines in chart
+function updateChart(lines, circles, n, colorScale){
+
+    //position lines
+    lines .attr("x", function(d, i){
+            return i * (chartInnerWidth / n) + (leftPadding+2.75)
+        })
+        // resize lines
+        .attr("height", function(d, i){
+            return 463 - yScale(parseFloat(d[expressed]));
+        })
+        .attr("y", function(d, i){
+            return yScale(parseFloat(d[expressed])) + topBottomPadding;
+        })
+
+    // position circles
+    circles.attr("cx", function(d, i) {
+            var xPosition =  i * (chartInnerWidth / n) + leftPadding + ((chartInnerWidth / n) / 2);
+            return (xPosition)
+        })
+        .attr("cy", function(d){
+            return yScale(parseFloat(d[expressed])) + topBottomPadding;
+        })
+        .attr("r", "4")
+        // recolor circles
+        .style("fill", function(d){            
+            var value = d[expressed];            
+            if(value) {                
+                return colorScale(value);            
+            } else {                
+                return "#ccc";            
+            }  
+        })
+        .attr("stroke", "#636363");
+
+    var chartTitle = d3.select(".chartTitle")
+        .text(arrayDict[expressed] + " in each region");
 };
 
 })();
