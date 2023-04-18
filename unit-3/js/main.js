@@ -109,7 +109,7 @@ function changeAttribute(attribute, csvData) {
     var colorScale = makeColorScale(csvData);
 
     //recolor enumeration units
-    var regions = d3.selectAll(".regions").style("fill", function (d) {
+    var regions = d3.selectAll(".counties").style("fill", function (d) {
         var value = d.properties[expressed];
         if (value) {
             return colorScale(d.properties[expressed]);
@@ -117,6 +117,46 @@ function changeAttribute(attribute, csvData) {
             return "#ccc";
         }
     });
+
+    var lines = chart.selectAll(".line")
+        .data(csvData)
+        .enter()
+        .append("rect")
+        .attr("class", function(d){
+            return "line " + d.NAMELSAD;
+        })
+        .attr("width", "0.5")
+        .attr("x", function(d, i){
+            return xScale(d.NAMELSAD) + leftPadding;
+        })
+        .attr("y", function(d, i){
+            return yScale(parseFloat(d[expressed])) + topBottomPadding;
+        })
+        .attr("height", function(d, i){
+            return 463 - yScale(parseFloat(d[expressed]));
+        });
+
+    // circles
+    var circles = chart.selectAll(".circle")
+        .data(csvData)
+        .join("circle")
+        .attr("cx", function(d){
+            return xScale(d.NAMELSAD) + leftPadding;
+        })
+        .attr("cy", function(d){
+            return yScale(parseFloat(d[expressed])) + topBottomPadding;
+        })
+        .attr("r", "4")
+        // recolor bars
+        .style("fill", function(d){            
+            var value = d[expressed];            
+            if(value) {                
+                return colorScale(value);            
+            } else {                
+                return "#ccc";            
+            }  
+        })
+        .attr("stroke", "#636363");
 }
 
 function setGraticule(map,path){
@@ -201,7 +241,7 @@ function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
       .enter()
       .append("path")
       .attr("class", function(d){
-        console.log(d.properties.NAME)
+        // console.log(d.properties.NAME)
           return "counties " + d.properties.NAME;
       })
       .attr("d", path)
@@ -251,7 +291,7 @@ function setChart(csvData, colorScale){
         .enter()
         .append("rect")
         .sort(function(a, b){
-            return b[expressed]-a[expressed]
+            return parseFloat(b[expressed])-parseFloat(a[expressed])
         })
         .attr("class", function(d){
             return "bar " + d.NAMELSAD;
@@ -295,7 +335,7 @@ function setChart(csvData, colorScale){
         .attr("transform", translate);
 };
 
-//function to create coordinated lollipop chart
+// function to create coordinated lollipop chart
 // source URL - https://d3-graph-gallery.com/graph/lollipop_basic.html
 function setDotPlot(csvData, colorScale){
     // create chart dimensions
@@ -308,36 +348,40 @@ function setDotPlot(csvData, colorScale){
         chartInnerHeight = chartHeight - topBottomPadding * 2,
         translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
 
-    //create a second svg element to hold the bar chart
+    // create a second svg element to hold the bar chart
     var chart = d3.select("body")
         .append("svg")
         .attr("width", chartWidth)
         .attr("height", chartHeight)
         .attr("class", "chart");
 
-     //create a rectangle for chart background fill
+     // create a rectangle for chart background fill
      var chartBackground = chart.append("rect")
      .attr("class", "chartBackground")
      .attr("width", chartInnerWidth)
      .attr("height", chartInnerHeight)
      .attr("transform", translate);
 
-     //create a scale for the x-axis
+     // create a scale for the x-axis
     var xScale = d3.scalePoint()
         .range([0, chartInnerWidth])
         .domain(csvData.map(function(d) { return d.NAMELSAD; }))
         .padding(1);
 
-    //create a scale to size bars proportionally to frame and for axis
+    // create a scale to size bars proportionally to frame and for axis
     var yScale = d3.scaleLinear()
         .range([463, 0])
         .domain([0, 0.6]);
 
-    // set lines for each province
-    var myline = chart.selectAll(".myline")
+    // set lines for each county
+    var lines = chart.selectAll(".line")
         .data(csvData)
         .enter()
         .append("rect")
+        // .sort is not working - NEED FIX
+        .sort(function(a, b) {
+            return parseFloat(b[expressed]) - parseFloat(a[expressed])
+        })
         .attr("class", function(d){
             return "line " + d.NAMELSAD;
         })
@@ -353,7 +397,7 @@ function setDotPlot(csvData, colorScale){
         });
 
      // circles
-     var mycircle = chart.selectAll(".mycircle")
+     var circles = chart.selectAll(".circle")
         .data(csvData)
         .join("circle")
         .attr("cx", function(d){
@@ -366,7 +410,11 @@ function setDotPlot(csvData, colorScale){
         .style("fill", function(d){
             return colorScale(d[expressed])
         })
-        .attr("stroke", "#636363");
+        .attr("stroke", "#636363")
+        // .sort is not working - NEED FIX
+        .sort(function(a, b) {
+            return parseFloat(b[expressed]) - parseFloat(a[expressed])
+        });
 
     //create a text element for the chart title
     var chartTitle = chart.append("text")
