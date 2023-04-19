@@ -152,13 +152,14 @@ function joinData(wisconsinCounties, csvData){
         var geojsonKey = geojsonProps.NAMELSAD; //the geojson primary key
 
         //where primary keys match, transfer csv data to geojson properties object
-        if (geojsonKey == csvKey){
+        if (geojsonKey === csvKey){
 
             //assign all attributes and values
             attrArray.forEach(function(attr){
                 var val = parseFloat(csvRegion[attr]); //get csv attribute value
                 geojsonProps[attr] = val; //assign attribute and value to geojson properties
             });
+            geojsonProps.NAMELSAD = csvRegion.NAMELSAD;
         };
         };
     };
@@ -168,33 +169,22 @@ function joinData(wisconsinCounties, csvData){
 };
 //function to create color scale generator
 function makeColorScale(data){
-    var colorClasses = [
-        "#ffffcc",
-        "#c2e699",
-        "#78c679",
-        "#31a354",
-        "#006837"
-    ];
-
+    var colorClasses = ["#ffffcc", "#c2e699", "#78c679", "#31a354", "#006837"];
     //create color scale generator
     var colorScale = d3.scaleQuantile()
         .range(colorClasses);
-
     //build array of all values of the expressed attribute
     var domainArray = [];
     for (var i=0; i<data.length; i++){
         var val = parseFloat(data[i][expressed]);
         domainArray.push(val);
     };
-
     //assign array of expressed values as scale domain
     colorScale.domain(domainArray);
-
     return colorScale;
 };
 
 function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
-
      // add Wisconsin to map
     var counties = map.selectAll(".counties")
       .data(wisconsinCounties)
@@ -202,7 +192,7 @@ function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
       .append("path")
       .attr("class", function(d){
         // console.log(d.properties.NAME)
-          return "counties " + d.properties.NAME;
+          return "counties " + d.properties.NAMELSAD;
       })
       .attr("d", path)
       .style("fill", function(d){            
@@ -363,7 +353,7 @@ function setDotPlot(csvData, colorScale){
             highlight(d);
         })
         .on("mouseout", function(event, d){
-            dehighlight(d.properties);
+            dehighlight(d);
         });
 
      // circles
@@ -371,8 +361,8 @@ function setDotPlot(csvData, colorScale){
         .data(csvData)
         .join("circle")
         .attr("cx", function(d, i) {
-            var xPosition =  i * (chartInnerWidth / csvData.length) + leftPadding + ((chartInnerWidth / csvData.length) / 2);
-            return (xPosition)
+            return i * (chartInnerWidth / csvData.length) + leftPadding + ((chartInnerWidth / csvData.length) / 2);
+            
         })
         .attr("cy", function(d){
             return yScale(parseFloat(d[expressed])) + topBottomPadding;
@@ -381,10 +371,7 @@ function setDotPlot(csvData, colorScale){
         .style("fill", function(d){
             return colorScale(d[expressed])
         })
-        .attr("stroke", "#636363")
-        .on("mouseover", function(event, d){
-            highlight(d);
-        });
+        .attr("stroke", "#636363");
 
     //create a text element for the chart title
     var chartTitle = chart.append("text")
@@ -532,7 +519,6 @@ function dehighlight(props){
             .text();
 
         var styleObject = JSON.parse(styleText);
-
         return styleObject[styleName];
     };
 };
