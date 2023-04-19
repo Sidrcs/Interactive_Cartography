@@ -5,6 +5,8 @@ var attrArray = ["stfid",	"NAMELSAD",	"hh1620_est",	"persons1620_est",	"hhkids16
 
 var arrayDict = {"stfid" : "Unique ID",	"NAMELSAD" : "County name",	"hh1620_est":"Households",	"persons1620_est":"Total persons",	"hhkids1620_est":"Household with children",	"kids1620_est":"Children",	"seniors1620_est":"Seniors",	"edlesshs1620_est":"Education less than high school",	"langeng1620_est":"English spoken at home",	"langasn1620_est":"Asian language spoken at home",	"racewhite1620_est":"White", "raceaa1620_est":"African American", "raceasian1620_est":"Asian",	"raceamind1620_est":"Native Americans",	"hispanic1620_est":"Hispanic", "noncitizens1620_est":"Non-citizens",	"drive1620_est":"Workers driving or carpooling to work", "prateacs1620_est":"Poverty (all persons)",	"pratekidsacs1620_est":"Poverty(kids)",	"gini1620_est":"Gini index of income inequality",	"renters1620_est":"Households renting home", "noveh1620_est":"Households without vehicle"};
 
+var arrayObj = [{data:"persons1620_est", text:"Total persons"}, {data:"hhkids1620_est", text:"Household with children"}, {data:"kids1620_est", text:"Children"}, {data:"seniors1620_est", text:"Seniors"}, {data:"edlesshs1620_est", text:"Education less than high school"}, {data:"langeng1620_est", text:"English spoken at home"}, {data:"langasn1620_est", text:"Asian language spoken at home"}, {data:"racewhite1620_est", text:"Percent White"}, {data:"raceaa1620_est", text:"Percent African American"}, {data:"raceasian1620_est", text:"Percent Asian"}, {data:"raceamind1620_est", text:"Percent Native Americans"}, {data:"raceamind1620_est", text:"Percent Native Americans"}, {data:"hispanic1620_est", text:"Percent Hispanic"}, {data:"noncitizens1620_est", text:"Percent Non-citizens"}, {data:"drive1620_est", text:"Workers driving or carpooling to work"}, {data:"prateacs1620_est", text:"Poverty (all persons)"}, {data:"pratekidsacs1620_est", text:"Poverty(kids)"}, {data:"gini1620_est", text:"Gini index of income inequality"}, {data:"renters1620_est", text:"Households renting home"}, {data:"noveh1620_est", text:"Households without vehicle"}];
+
 var expressed = attrArray[19]; // loaded attribute based on index
 
 // create chart dimensions
@@ -84,11 +86,11 @@ function setMap(){
         // add enumeration units to the map
         setEnumerationUnits(wisconsinCounties, map, path, colorScale)
 
-        // add dotplot visualization to the map
-        setDotPlot(csvData, colorScale);
-
         // add dropdown to the map
         createDropdown(csvData);
+
+        // add dotplot visualization to the map
+        setDotPlot(csvData, colorScale);
        
     };
 };
@@ -110,11 +112,11 @@ function createDropdown(csvData){
 
     //add attribute name options
     var attrOptions = dropdown.selectAll("attrOptions")
-        .data(attrArray)
+        .data(arrayObj)
         .enter()
         .append("option")
-        .attr("value", function(d){ return d })
-        .text(function(d){ return d });
+        .attr("value", function(d){ return d.data })
+        .text(function(d){ return d.text });
 };
 
 function setGraticule(map,path){
@@ -273,7 +275,7 @@ function setChart(csvData, colorScale){
         .attr("x", 40)
         .attr("y", 40)
         .attr("class", "chartTitle")
-        .text( arrayDict[expressed]);
+        .text(arrayDict[expressed]);
 
     //create vertical axis generator
     var yAxis = d3.axisLeft()
@@ -338,6 +340,7 @@ function setDotPlot(csvData, colorScale){
             return i * (chartInnerWidth / csvData.length) + (leftPadding+2.75)
         })
         .attr("y", function(d, i){
+            console.log("Dot plot value",expressed)
             return yScale(parseFloat(d[expressed])) + topBottomPadding;
         })
         .attr("height", function(d, i){
@@ -391,74 +394,58 @@ function setDotPlot(csvData, colorScale){
 
 //dropdown change event handler
 function changeAttribute(attribute, csvData) {
-    //change the expressed attribute
+
+    // change the expressed attribute
     expressed = attribute;
 
-    //recreate the color scale
+    // recreate color scale
     var colorScale = makeColorScale(csvData);
 
-    //recolor enumeration units
+    // recolor counties
     var regions = d3.selectAll(".counties")
-    .transition()
-    .duration(1000)
-    .style("fill", function (d) {
-        var value = d.properties[expressed];
-        if (value) {
-            return colorScale(d.properties[expressed]);
-        } else {
-            return "#ccc";
-        }
-    });
-
-    // set lines for each county
-    var lines = chart.selectAll(".line")
-        .data(csvData)
-        .enter()
-        .append("rect")
-        .attr("class", function(d){
-            return "line " + d.NAMELSAD;
-        })
-        .attr("width", "0.5")
-        .attr("x", function(d, i){
-            return i * (chartInnerWidth / csvData.length) + (leftPadding+2.75)
-        })
-        .attr("y", function(d, i){
-            return yScale(parseFloat(d[expressed])) + topBottomPadding;
-        })
-        .attr("height", function(d, i){
-            return 463 - yScale(parseFloat(d[expressed]));
+        .transition()
+        .duration(1000)
+        .style("fill", function (d) {
+            var value = d.properties[expressed];
+            if (value) {
+                return colorScale(d.properties[expressed]);
+            } else {
+                return "#ccc";
+            }
         });
 
+    // set lines for each county
+    var lines = d3.selectAll(".line")
+
     // circles
-    var circles = chart.selectAll(".circle")
-        .data(csvData)
-        .join("circle")
-        .attr("cx", function(d, i) {
-            var xPosition =  i * (chartInnerWidth / csvData.length) + leftPadding + ((chartInnerWidth / csvData.length) / 2);
-            return (xPosition)
-        })
-        .attr("cy", function(d){
-            return yScale(parseFloat(d[expressed])) + topBottomPadding;
-        })
-        .attr("r", "4")
-        // recolor circles
-        .style("fill", function(d){            
-            var value = d[expressed];            
-            if(value) {                
-                return colorScale(value);            
-            } else {                
-                return "#ccc";            
-            }  
-        })
-        .attr("stroke", "#636363");
+    var circles = d3.selectAll("circle")
+
+    var domainArray = [];
+    for (var i=0; i<csvData.length; i++){
+        var val = parseFloat(csvData[i][expressed]);
+        domainArray.push(val);
+    };
+    var max = d3.max(domainArray);
+
+    yScale = d3.scaleLinear()
+        .range([463, 0])
+        .domain([0, max+(0.1*max)]);
+
+    var yAxis = d3.axisLeft()
+        .scale(yScale);
+
+    d3.select(".axis").call(yAxis)
+
+    // set line & circle positions, heights, and colors
+    updateChart(lines, circles, csvData.length, colorScale);
 };
 
 //function to position, size, and color lines in chart
 function updateChart(lines, circles, n, colorScale){
-
+    
     //position lines
-    lines .attr("x", function(d, i){
-            return i * (chartInnerWidth / n) + (leftPadding+2.75)
+    lines.attr("x", function(d, i){
+            return i * (chartInnerWidth / n) + (leftPadding + 2.75)
         })
         // resize lines
         .attr("height", function(d, i){
@@ -470,8 +457,7 @@ function updateChart(lines, circles, n, colorScale){
 
     // position circles
     circles.attr("cx", function(d, i) {
-            var xPosition =  i * (chartInnerWidth / n) + leftPadding + ((chartInnerWidth / n) / 2);
-            return (xPosition)
+            return i * (chartInnerWidth / n) + leftPadding + ((chartInnerWidth / n) / 2);
         })
         .attr("cy", function(d){
             return yScale(parseFloat(d[expressed])) + topBottomPadding;
@@ -489,7 +475,7 @@ function updateChart(lines, circles, n, colorScale){
         .attr("stroke", "#636363");
 
     var chartTitle = d3.select(".chartTitle")
-        .text(arrayDict[expressed] + " in each region");
+        .text(arrayDict[expressed] + " in each county (WI)");
 };
 
 })();
