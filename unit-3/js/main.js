@@ -1,9 +1,9 @@
 (function(){
 
 //pseudo-global variable    
-var attrArray = ["stfid", "adm2_code",	"NAMELSAD",	"hh1620_est",	"persons1620_est",	"hhkids1620_est",	"kids1620_est",	"seniors1620_est",	"edlesshs1620_est",	"langeng1620_est",	"langasn1620_est",	"racewhite1620_est",	"raceaa1620_est",	"raceasian1620_est",	"raceamind1620_est",	"hispanic1620_est",	"noncitizens1620_est",	"drive1620_est", "prateacs1620_est",	"pratekidsacs1620_est",	"gini1620_est",	"renters1620_est",	"noveh1620_est"];
+var attrArray = ["stfid", "adm2_code",	"NAME",	"hh1620_est",	"persons1620_est",	"hhkids1620_est",	"kids1620_est",	"seniors1620_est",	"edlesshs1620_est",	"langeng1620_est",	"langasn1620_est",	"racewhite1620_est",	"raceaa1620_est",	"raceasian1620_est",	"raceamind1620_est",	"hispanic1620_est",	"noncitizens1620_est",	"drive1620_est", "prateacs1620_est",	"pratekidsacs1620_est",	"gini1620_est",	"renters1620_est",	"noveh1620_est"];
 
-var arrayDict = {"stfid" : "Unique ID",	"adm2_code" : "admin2 code","NAMELSAD" : "County name",	"hh1620_est":"Percent Households",	"persons1620_est":"Percent persons (Total)",	"hhkids1620_est":"Household with children",	"kids1620_est":"Children",	"seniors1620_est":"Seniors",	"edlesshs1620_est":"Education less than high school",	"langeng1620_est":"English spoken at home",	"langasn1620_est":"Asian language spoken at home",	"racewhite1620_est":"Percent White", "raceaa1620_est":"Percent African American", "raceasian1620_est":"Percent Asian",	"raceamind1620_est":"Percent Native Americans",	"hispanic1620_est":"Percent Hispanic", "noncitizens1620_est":"Percent Non-citizens",	"drive1620_est":"Workers driving or carpooling to work", "prateacs1620_est":"Poverty (all persons)",	"pratekidsacs1620_est":"Poverty (kids)",	"gini1620_est":"Gini index of income inequality",	"renters1620_est":"Households renting home", "noveh1620_est":"Households without vehicle"};
+var arrayDict = {"stfid" : "Unique ID",	"adm2_code" : "admin2 code","NAME" : "County name", "hh1620_est":"Percent Households",	"persons1620_est":"Percent persons (Total)",	"hhkids1620_est":"Household with children",	"kids1620_est":"Children",	"seniors1620_est":"Seniors",	"edlesshs1620_est":"Education less than high school",	"langeng1620_est":"English spoken at home",	"langasn1620_est":"Asian language spoken at home",	"racewhite1620_est":"Percent White", "raceaa1620_est":"Percent African American", "raceasian1620_est":"Percent Asian",	"raceamind1620_est":"Percent Native Americans",	"hispanic1620_est":"Percent Hispanic", "noncitizens1620_est":"Percent Non-citizens",	"drive1620_est":"Workers driving or carpooling to work", "prateacs1620_est":"Poverty (all persons)",	"pratekidsacs1620_est":"Poverty (kids)",	"gini1620_est":"Gini index of income inequality",	"renters1620_est":"Households renting home", "noveh1620_est":"Households without vehicle"};
 
 var arrayObj = [{data:"hh1620_est", text:"Percent Households"}, {data:"persons1620_est", text:"Percent persons (Total)"}, {data:"hhkids1620_est", text:"Household with children"}, {data:"kids1620_est", text:"Children"}, {data:"seniors1620_est", text:"Seniors"}, {data:"edlesshs1620_est", text:"Education less than high school"}, {data:"langeng1620_est", text:"English spoken at home"}, {data:"langasn1620_est", text:"Asian language spoken at home"}, {data:"racewhite1620_est", text:"Percent White"}, {data:"raceaa1620_est", text:"Percent African American"}, {data:"raceasian1620_est", text:"Percent Asian"}, {data:"raceamind1620_est", text:"Percent Native Americans"}, {data:"raceamind1620_est", text:"Percent Native Americans"}, {data:"hispanic1620_est", text:"Percent Hispanic"}, {data:"noncitizens1620_est", text:"Percent Non-citizens"}, {data:"drive1620_est", text:"Workers driving or carpooling to work"}, {data:"prateacs1620_est", text:"Poverty (all persons)"}, {data:"pratekidsacs1620_est", text:"Poverty (kids)"}, {data:"gini1620_est", text:"Gini index of income inequality"}, {data:"renters1620_est", text:"Households renting home"}, {data:"noveh1620_est", text:"Households without vehicle"}];
 
@@ -92,6 +92,7 @@ function setMap(){
         // add dotplot visualization to the map
         setDotPlot(csvData, colorScale);
 
+        // add color legend
         makeLegend(colorScale);
        
     };
@@ -225,8 +226,8 @@ function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
 
 // code from Stackoverflow
 function makeLegend(color) {
-    var width = 200,
-        height = 200;
+    var width = 300,
+        height = 300;
         topBottomPadding = 5;
 
     var svg = d3.select("body")
@@ -267,7 +268,7 @@ function makeLegend(color) {
             var format = d3.format("0.2f");
             return format(+extent[0]) + " - " + format(+extent[1]);
         })
-}
+};
 
 //function to create coordinated bar chart
 function setChart(csvData, colorScale){
@@ -617,7 +618,7 @@ function setLabel(props){
 
     var regionName = infolabel.append("div")
         .attr("class", "labelname")
-        .html(props.NAME + " County");
+        .html(props.NAMELSAD);
 };
 
 //function to move info label with mouse
