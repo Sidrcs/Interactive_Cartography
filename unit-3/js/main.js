@@ -3,11 +3,11 @@
 //pseudo-global variable    
 var attrArray = ["stfid",	"NAMELSAD",	"hh1620_est",	"persons1620_est",	"hhkids1620_est",	"kids1620_est",	"seniors1620_est",	"edlesshs1620_est",	"langeng1620_est",	"langasn1620_est",	"racewhite1620_est",	"raceaa1620_est",	"raceasian1620_est",	"raceamind1620_est",	"hispanic1620_est",	"noncitizens1620_est",	"drive1620_est", "prateacs1620_est",	"pratekidsacs1620_est",	"gini1620_est",	"renters1620_est",	"noveh1620_est"];
 
-var arrayDict = {"stfid" : "Unique ID",	"NAMELSAD" : "County name",	"hh1620_est":"Households",	"persons1620_est":"Total persons",	"hhkids1620_est":"Household with children",	"kids1620_est":"Children",	"seniors1620_est":"Seniors",	"edlesshs1620_est":"Education less than high school",	"langeng1620_est":"English spoken at home",	"langasn1620_est":"Asian language spoken at home",	"racewhite1620_est":"White", "raceaa1620_est":"African American", "raceasian1620_est":"Asian",	"raceamind1620_est":"Native Americans",	"hispanic1620_est":"Hispanic", "noncitizens1620_est":"Non-citizens",	"drive1620_est":"Workers driving or carpooling to work", "prateacs1620_est":"Poverty (all persons)",	"pratekidsacs1620_est":"Poverty(kids)",	"gini1620_est":"Gini index of income inequality",	"renters1620_est":"Households renting home", "noveh1620_est":"Households without vehicle"};
+var arrayDict = {"stfid" : "Unique ID",	"NAMELSAD" : "County name",	"hh1620_est":"Households",	"persons1620_est":"Total persons",	"hhkids1620_est":"Household with children",	"kids1620_est":"Children",	"seniors1620_est":"Seniors",	"edlesshs1620_est":"Education less than high school",	"langeng1620_est":"English spoken at home",	"langasn1620_est":"Asian language spoken at home",	"racewhite1620_est":"Percent White", "raceaa1620_est":"Percent African American", "raceasian1620_est":"Percent Asian",	"raceamind1620_est":"Percent Native Americans",	"hispanic1620_est":"Percent Hispanic", "noncitizens1620_est":"Percent Non-citizens",	"drive1620_est":"Workers driving or carpooling to work", "prateacs1620_est":"Poverty (all persons)",	"pratekidsacs1620_est":"Poverty (kids)",	"gini1620_est":"Gini index of income inequality",	"renters1620_est":"Households renting home", "noveh1620_est":"Households without vehicle"};
 
-var arrayObj = [{data:"persons1620_est", text:"Total persons"}, {data:"hhkids1620_est", text:"Household with children"}, {data:"kids1620_est", text:"Children"}, {data:"seniors1620_est", text:"Seniors"}, {data:"edlesshs1620_est", text:"Education less than high school"}, {data:"langeng1620_est", text:"English spoken at home"}, {data:"langasn1620_est", text:"Asian language spoken at home"}, {data:"racewhite1620_est", text:"Percent White"}, {data:"raceaa1620_est", text:"Percent African American"}, {data:"raceasian1620_est", text:"Percent Asian"}, {data:"raceamind1620_est", text:"Percent Native Americans"}, {data:"raceamind1620_est", text:"Percent Native Americans"}, {data:"hispanic1620_est", text:"Percent Hispanic"}, {data:"noncitizens1620_est", text:"Percent Non-citizens"}, {data:"drive1620_est", text:"Workers driving or carpooling to work"}, {data:"prateacs1620_est", text:"Poverty (all persons)"}, {data:"pratekidsacs1620_est", text:"Poverty(kids)"}, {data:"gini1620_est", text:"Gini index of income inequality"}, {data:"renters1620_est", text:"Households renting home"}, {data:"noveh1620_est", text:"Households without vehicle"}];
+var arrayObj = [{data:"persons1620_est", text:"Total persons"}, {data:"hhkids1620_est", text:"Household with children"}, {data:"kids1620_est", text:"Children"}, {data:"seniors1620_est", text:"Seniors"}, {data:"edlesshs1620_est", text:"Education less than high school"}, {data:"langeng1620_est", text:"English spoken at home"}, {data:"langasn1620_est", text:"Asian language spoken at home"}, {data:"racewhite1620_est", text:"Percent White"}, {data:"raceaa1620_est", text:"Percent African American"}, {data:"raceasian1620_est", text:"Percent Asian"}, {data:"raceamind1620_est", text:"Percent Native Americans"}, {data:"raceamind1620_est", text:"Percent Native Americans"}, {data:"hispanic1620_est", text:"Percent Hispanic"}, {data:"noncitizens1620_est", text:"Percent Non-citizens"}, {data:"drive1620_est", text:"Workers driving or carpooling to work"}, {data:"prateacs1620_est", text:"Poverty (all persons)"}, {data:"pratekidsacs1620_est", text:"Poverty (kids)"}, {data:"gini1620_est", text:"Gini index of income inequality"}, {data:"renters1620_est", text:"Households renting home"}, {data:"noveh1620_est", text:"Households without vehicle"}];
 
-var expressed = attrArray[19]; // loaded attribute based on index
+var expressed = attrArray[16]; // loaded attribute based on index
 
 // create chart dimensions
 var chartWidth = window.innerWidth * 0.425,
@@ -22,14 +22,14 @@ translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
 // create a scale to size lines proportionally to frame and for axis
 var yScale = d3.scaleLinear()
 .range([463, 0])
-.domain([0, 0.6]);
+.domain([0, 100]);
 
 window.onload = setMap();
 
 // setup a choropleth map
 function setMap(){
     // map frame dimensions
-    var width = window.innerWidth * 0.5,
+    var width = window.innerWidth * 0.48,
         height = 473;
 
     // create new svg container for the map
@@ -202,7 +202,7 @@ function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
       .append("path")
       .attr("class", function(d){
         // console.log(d.properties.NAME)
-          return "counties " + d.properties.NAME;
+          return "counties " + d.properties.NAMELSAD;
       })
       .attr("d", path)
       .style("fill", function(d){            
@@ -211,7 +211,11 @@ function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
             return colorScale(d.properties[expressed]);            
         } else {                
             return "#ccc";            
-        }    });
+        }    
+    })
+    .on("mouseover", function(event, d){
+        highlight(d.properties);
+    });
 };
 
 //function to create coordinated bar chart
@@ -301,8 +305,8 @@ function setDotPlot(csvData, colorScale){
     // create chart dimensions
     var chartWidth = window.innerWidth * 0.425,
         chartHeight = 473,
-        leftPadding = 25,
-        rightPadding = 2,
+        leftPadding = 20,
+        rightPadding = 0.5,
         topBottomPadding = 5,
         chartInnerWidth = chartWidth - leftPadding - rightPadding,
         chartInnerHeight = chartHeight - topBottomPadding * 2,
@@ -345,6 +349,9 @@ function setDotPlot(csvData, colorScale){
         })
         .attr("height", function(d, i){
             return 463 - yScale(parseFloat(d[expressed]));
+        })
+        .on("mouseover", function(event, d){
+            highlight(d);
         });
 
      // circles
@@ -362,12 +369,15 @@ function setDotPlot(csvData, colorScale){
         .style("fill", function(d){
             return colorScale(d[expressed])
         })
-        .attr("stroke", "#636363");
+        .attr("stroke", "#636363")
+        .on("mouseover", function(event, d){
+            highlight(d);
+        });
 
     //create a text element for the chart title
     var chartTitle = chart.append("text")
         .attr("x", 40)
-        .attr("y", 40)
+        .attr("y", 30)
         .attr("class", "chartTitle")
         .text(arrayDict[expressed]);
 
@@ -475,7 +485,15 @@ function updateChart(lines, circles, n, colorScale){
         .attr("stroke", "#636363");
 
     var chartTitle = d3.select(".chartTitle")
-        .text(arrayDict[expressed] + " in each county (WI)");
+        .text(arrayDict[expressed] + " in each county");
 };
 
+//function to highlight enumeration units and bars
+function highlight(props){
+    //change stroke
+    var selected = d3.selectAll("." + props.NAMELSAD)
+        .style("stroke", "blue")
+        .style("stroke-width", "2");
+};
+  
 })();
