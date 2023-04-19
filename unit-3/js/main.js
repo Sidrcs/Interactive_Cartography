@@ -3,7 +3,7 @@
 //pseudo-global variable    
 var attrArray = ["stfid", "adm2_code",	"NAMELSAD",	"hh1620_est",	"persons1620_est",	"hhkids1620_est",	"kids1620_est",	"seniors1620_est",	"edlesshs1620_est",	"langeng1620_est",	"langasn1620_est",	"racewhite1620_est",	"raceaa1620_est",	"raceasian1620_est",	"raceamind1620_est",	"hispanic1620_est",	"noncitizens1620_est",	"drive1620_est", "prateacs1620_est",	"pratekidsacs1620_est",	"gini1620_est",	"renters1620_est",	"noveh1620_est"];
 
-var arrayDict = {"stfid" : "Unique ID",	"NAMELSAD" : "County name",	"hh1620_est":"Percent Households",	"persons1620_est":"Percent persons (Total)",	"hhkids1620_est":"Household with children",	"kids1620_est":"Children",	"seniors1620_est":"Seniors",	"edlesshs1620_est":"Education less than high school",	"langeng1620_est":"English spoken at home",	"langasn1620_est":"Asian language spoken at home",	"racewhite1620_est":"Percent White", "raceaa1620_est":"Percent African American", "raceasian1620_est":"Percent Asian",	"raceamind1620_est":"Percent Native Americans",	"hispanic1620_est":"Percent Hispanic", "noncitizens1620_est":"Percent Non-citizens",	"drive1620_est":"Workers driving or carpooling to work", "prateacs1620_est":"Poverty (all persons)",	"pratekidsacs1620_est":"Poverty (kids)",	"gini1620_est":"Gini index of income inequality",	"renters1620_est":"Households renting home", "noveh1620_est":"Households without vehicle"};
+var arrayDict = {"stfid" : "Unique ID",	"adm2_code" : "admin2 code","NAMELSAD" : "County name",	"hh1620_est":"Percent Households",	"persons1620_est":"Percent persons (Total)",	"hhkids1620_est":"Household with children",	"kids1620_est":"Children",	"seniors1620_est":"Seniors",	"edlesshs1620_est":"Education less than high school",	"langeng1620_est":"English spoken at home",	"langasn1620_est":"Asian language spoken at home",	"racewhite1620_est":"Percent White", "raceaa1620_est":"Percent African American", "raceasian1620_est":"Percent Asian",	"raceamind1620_est":"Percent Native Americans",	"hispanic1620_est":"Percent Hispanic", "noncitizens1620_est":"Percent Non-citizens",	"drive1620_est":"Workers driving or carpooling to work", "prateacs1620_est":"Poverty (all persons)",	"pratekidsacs1620_est":"Poverty (kids)",	"gini1620_est":"Gini index of income inequality",	"renters1620_est":"Households renting home", "noveh1620_est":"Households without vehicle"};
 
 var arrayObj = [{data:"hh1620_est", text:"Percent Households"}, {data:"persons1620_est", text:"Percent persons (Total)"}, {data:"hhkids1620_est", text:"Household with children"}, {data:"kids1620_est", text:"Children"}, {data:"seniors1620_est", text:"Seniors"}, {data:"edlesshs1620_est", text:"Education less than high school"}, {data:"langeng1620_est", text:"English spoken at home"}, {data:"langasn1620_est", text:"Asian language spoken at home"}, {data:"racewhite1620_est", text:"Percent White"}, {data:"raceaa1620_est", text:"Percent African American"}, {data:"raceasian1620_est", text:"Percent Asian"}, {data:"raceamind1620_est", text:"Percent Native Americans"}, {data:"raceamind1620_est", text:"Percent Native Americans"}, {data:"hispanic1620_est", text:"Percent Hispanic"}, {data:"noncitizens1620_est", text:"Percent Non-citizens"}, {data:"drive1620_est", text:"Workers driving or carpooling to work"}, {data:"prateacs1620_est", text:"Poverty (all persons)"}, {data:"pratekidsacs1620_est", text:"Poverty (kids)"}, {data:"gini1620_est", text:"Gini index of income inequality"}, {data:"renters1620_est", text:"Households renting home"}, {data:"noveh1620_est", text:"Households without vehicle"}];
 
@@ -91,15 +91,23 @@ function setMap(){
 
         // add dotplot visualization to the map
         setDotPlot(csvData, colorScale);
+
+        makeLegend(colorScale);
        
     };
 };
 
 function createDropdown(csvData){
+
+    var left = document.querySelector('.map').getBoundingClientRect().left + 8,
+        top = document.querySelector('.map').getBoundingClientRect().top + 8;
+
     //add select element
     var dropdown = d3.select("body")
         .append("select")
         .attr("class", "dropdown")
+        .style('left', left + "px")
+        .style("top", top + "px")
         .on("change", function(){
             changeAttribute(this.value, csvData)
         });
@@ -191,7 +199,7 @@ function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
       .enter()
       .append("path")
       .attr("class", function(d){
-          console.log("counties",d.properties.adm2_code)
+          // console.log("counties",d.properties.adm2_code)
           return "counties " + d.properties.adm2_code;
       })
       .attr("d", path)
@@ -208,11 +216,58 @@ function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
     })
     .on("mouseout", function(event, d){
         dehighlight(d.properties);
-    });
+    })
+    .on("mousemove", moveLabel);
 
     var desc = counties.append("desc")
         .text('{"stroke": "#000", "stroke-width": "0.5px"}');
 };
+
+// code from Stackoverflow
+function makeLegend(color) {
+    var width = 200,
+        height = 200;
+        topBottomPadding = 5;
+
+    var svg = d3.select("body")
+        .append("svg")
+        .attr("class", "legend")
+        .attr("width", width)
+        .attr("height", height)
+        .style("float", 'left');
+
+    var legend = svg.selectAll('g.legendEntry')
+        .data(color.range().reverse())
+        .enter()
+        .append('g').attr('class', 'legendEntry')
+        .style("float", 'left');
+
+    legend.append('rect')
+        .style("float", 'left')
+        .attr("x", width - 200)
+        .attr("y", function (d, i) {
+            return i * 20;
+        })
+        .attr("width", 15)
+        .attr("height", 15)
+        .style("stroke", "black")
+        .style("stroke-width", 1)
+        .style("fill", function (d) { return d; });
+
+    //the data objects are the fill colors
+    legend.append('text')
+        .attr("x", width - 175) //leave 5 pixel space after the <rect>
+        .attr("y", function (d, i) {
+            return i * 20;
+        })
+        .attr("dy", "0.8em") //place text one line *below* the x,y point
+        .text(function (d, i) {
+            var extent = color.invertExtent(d);
+            //extent will be a two-element array, format it however you want:
+            var format = d3.format("0.2f");
+            return format(+extent[0]) + " - " + format(+extent[1]);
+        })
+}
 
 //function to create coordinated bar chart
 function setChart(csvData, colorScale){
@@ -336,7 +391,7 @@ function setDotPlot(csvData, colorScale){
         .enter()
         .append("rect")
         .attr("class", function(d){
-            console.log("line", d.adm2_code)
+            // console.log("line", d.adm2_code)
             return "line " + d.adm2_code;
         })
         .attr("width", "0.5")
@@ -355,12 +410,17 @@ function setDotPlot(csvData, colorScale){
         })
         .on("mouseout", function(event, d){
             dehighlight(d);
-        });
+        })
+        .on("mousemove", moveLabel);
 
      // circles
      var circles = chart.selectAll(".circle")
         .data(csvData)
         .join("circle")
+        .attr("class", function(d){
+            // console.log("line", d.adm2_code)
+            return "circle " + d.adm2_code;
+        })
         .attr("cx", function(d, i) {
             return i * (chartInnerWidth / csvData.length) + leftPadding + ((chartInnerWidth / csvData.length) / 2);
             
@@ -372,7 +432,14 @@ function setDotPlot(csvData, colorScale){
         .style("fill", function(d){
             return colorScale(d[expressed])
         })
-        .attr("stroke", "#636363");
+        .attr("stroke", "#636363")
+        .on("mouseover", function(event, d){
+            highlight(d);
+        })
+        .on("mouseout", function(event, d){
+            dehighlight(d);
+        })
+        .on("mousemove", moveLabel);
 
     //create a text element for the chart title
     var chartTitle = chart.append("text")
@@ -403,6 +470,10 @@ function setDotPlot(csvData, colorScale){
 
     var desc = lines.append("desc")
         .text('{"stroke": "none", "stroke-width": "0px"}');
+
+    var desc2 = circles.append("desc")
+     .text('{"stroke": "#636363", "stroke-width": "1px"}');
+
 };
 
 //dropdown change event handler
@@ -454,6 +525,9 @@ function changeAttribute(attribute, csvData) {
 
     d3.select(".axis").call(yAxis)
 
+    d3.select(".legend").remove();
+    makeLegend(colorScale);
+
     // set line & circle positions, heights, and colors
     updateChart(lines, circles, csvData.length, colorScale);
 };
@@ -502,6 +576,8 @@ function highlight(props){
     var selected = d3.selectAll("." + props.adm2_code)
         .style("stroke", "#252525")
         .style("stroke-width", "3");
+        
+    setLabel(props);
 };
 
 //function to reset the element style on mouseout
@@ -522,6 +598,50 @@ function dehighlight(props){
         var styleObject = JSON.parse(styleText);
         return styleObject[styleName];
     };
+
+    //remove info label
+    d3.select(".infolabel").remove();
+};
+
+function setLabel(props){
+    //label content
+    var labelAttribute = "<h1>" + props[expressed]
+        "</h1><b>" + expressed + "</b>";
+
+    //create info label div
+    var infolabel = d3.select("body")
+        .append("div")
+        .attr("class", "infolabel")
+        .attr("id", props.adm2_code + "_label")
+        .html(labelAttribute);
+
+    var regionName = infolabel.append("div")
+        .attr("class", "labelname")
+        .html(props.NAME + " County");
+};
+
+//function to move info label with mouse
+function moveLabel(){
+    //get width of label
+    var labelWidth = d3.select(".infolabel")
+        .node()
+        .getBoundingClientRect()
+        .width;
+
+    //use coordinates of mousemove event to set label coordinates
+    var x1 = event.clientX + 10,
+        y1 = event.clientY - 75,
+        x2 = event.clientX - labelWidth - 10,
+        y2 = event.clientY + 25;
+
+    //horizontal label coordinate, testing for overflow
+    var x = event.clientX > window.innerWidth - labelWidth - 20 ? x2 : x1; 
+    //vertical label coordinate, testing for overflow
+    var y = event.clientY < 75 ? y2 : y1; 
+
+    d3.select(".infolabel")
+        .style("left", x + "px")
+        .style("top", y + "px");
 };
 
 
