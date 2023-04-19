@@ -28,9 +28,9 @@
 }
 
 .chartTitle {
-    font-family: Verdana, sans-serif;
+    font-family: sans-serif;
     font-size: 16px;
-    font-weight: normal;
+    font-weight: bold;
 }
 
 .chartBackground {
@@ -59,6 +59,7 @@
 }
 
 /* dropdown */
+
 .dropdown {
     position: absolute;
     top: 30px;
