@@ -145,7 +145,7 @@ function joinData(wisconsinCounties, csvData){
         var csvRegion = csvData[i]; //the current region
         var csvKey = csvRegion.NAMELSAD; //the CSV primary key
 
-        //loop through geojson regions to find correct region
+        //loop through geojson counties to find correct region
         for (var a=0; a<wisconsinCounties.length; a++){
 
         var geojsonProps = wisconsinCounties[a].properties; //the current region geojson properties
@@ -196,13 +196,13 @@ function makeColorScale(data){
 function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
 
      // add Wisconsin to map
-    var state = map.selectAll(".counties")
+    var counties = map.selectAll(".counties")
       .data(wisconsinCounties)
       .enter()
       .append("path")
       .attr("class", function(d){
         // console.log(d.properties.NAME)
-          return "counties " + d.properties.NAMELSAD;
+          return "counties " + d.properties.NAME;
       })
       .attr("d", path)
       .style("fill", function(d){            
@@ -215,7 +215,13 @@ function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
     })
     .on("mouseover", function(event, d){
         highlight(d.properties);
+    })
+    .on("mouseout", function(event, d){
+        dehighlight(d.properties);
     });
+
+    var desc = counties.append("desc")
+        .text('{"stroke": "#000", "stroke-width": "0.5px"}');
 };
 
 //function to create coordinated bar chart
@@ -297,6 +303,9 @@ function setChart(csvData, colorScale){
         .attr("width", chartInnerWidth)
         .attr("height", chartInnerHeight)
         .attr("transform", translate);
+
+    var desc = counties.append("desc")
+        .text('{"stroke": "#000", "stroke-width": "0.5px"}');
 };
 
 // function to create coordinated lollipop chart
@@ -352,6 +361,9 @@ function setDotPlot(csvData, colorScale){
         })
         .on("mouseover", function(event, d){
             highlight(d);
+        })
+        .on("mouseout", function(event, d){
+            dehighlight(d.properties);
         });
 
      // circles
@@ -400,6 +412,9 @@ function setDotPlot(csvData, colorScale){
 
     // set line & circle positions, heights, and colors
     updateChart(lines, circles, csvData.length, colorScale);
+
+    var desc = lines.append("desc")
+        .text('{"stroke": "none", "stroke-width": "0px"}');
 };
 
 //dropdown change event handler
@@ -412,7 +427,7 @@ function changeAttribute(attribute, csvData) {
     var colorScale = makeColorScale(csvData);
 
     // recolor counties
-    var regions = d3.selectAll(".counties")
+    var counties = d3.selectAll(".counties")
         .transition()
         .duration(1000)
         .style("fill", function (d) {
@@ -426,6 +441,11 @@ function changeAttribute(attribute, csvData) {
 
     // set lines for each county
     var lines = d3.selectAll(".line")
+        .transition() //add animation
+        .delay(function(d, i){
+            return i * 10
+        })
+        .duration(500);
 
     // circles
     var circles = d3.selectAll("circle")
@@ -491,9 +511,30 @@ function updateChart(lines, circles, n, colorScale){
 //function to highlight enumeration units and bars
 function highlight(props){
     //change stroke
-    var selected = d3.selectAll("." + props.NAMELSAD)
-        .style("stroke", "blue")
+    var selected = d3.selectAll("." + props.NAME)
+        .style("stroke", "#252525")
         .style("stroke-width", "2");
+};
+
+//function to reset the element style on mouseout
+function dehighlight(props){
+    var selected = d3.selectAll("." + props.NAME)
+        .style("stroke", function(){
+            return getStyle(this, "stroke")
+        })
+        .style("stroke-width", function(){
+            return getStyle(this, "stroke-width")
+        });
+
+    function getStyle(element, styleName){
+        var styleText = d3.select(element)
+            .select("desc")
+            .text();
+
+        var styleObject = JSON.parse(styleText);
+
+        return styleObject[styleName];
+    };
 };
   
 })();
