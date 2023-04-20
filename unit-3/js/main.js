@@ -580,8 +580,10 @@ function updateChart(lines, circles, n, colorScale){
         })
         .attr("stroke", "#636363");
 
+    var chartLabel = arrayDict[expressed] + " in each county";
+
     var chartTitle = d3.select(".chartTitle")
-        .text(arrayDict[expressed] + " in each county");
+        .text(chartLabel);
 };
 
 //function to highlight enumeration units and bars

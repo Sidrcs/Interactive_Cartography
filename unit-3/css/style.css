@@ -32,7 +32,7 @@
     max-width: auto;
     text-align: auto;
     position: absolute;
-    top: calc(100% - 50px); /* adjust the top value as needed */
+    bottom: -250px;
     width: auto;
     font-family: 'Open Sans', sans-serif;
     font-size: 1em;
@@ -41,12 +41,12 @@
 
 .credits{
     position: absolute;
-    top: calc(100% + 230px); /* adjust the top value as needed */
+    bottom: -300px;
     left: 0;
     width: 100%;
     font-family: 'Open Sans', sans-serif;
     font-size: 1em;
-    color:#91a28a;
+    color:#91a28aa0;
     text-align: center;
 }
 
