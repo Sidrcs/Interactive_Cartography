@@ -67,7 +67,7 @@ function setMap(){
     function callback(data){
         var csvData = data[0], wisconsin = data[1];
 
-        // place graticule on the map
+        // place graticule on the map. But it is not used in map
         // setGraticule(map,path);
 
         // testing whether the files are loaded correctly or not
@@ -98,6 +98,7 @@ function setMap(){
     };
 };
 
+// Drawing county data to map frame
 function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
     // add Wisconsin to map
    var counties = map.selectAll(".counties")
@@ -117,18 +118,22 @@ function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
            return "#ccc";            
        }    
    })
+   // mouseover, mouseout events for highlighting or dehighlighting
    .on("mouseover", function(event, d){
        highlight(d.properties);
    })
    .on("mouseout", function(event, d){
        dehighlight(d.properties);
    })
+   // label event listener
    .on("mousemove", moveLabel);
 
+   // county dehighlight solution
    var desc = counties.append("desc")
        .text('{"stroke": "#464545", "stroke-width": "0.5px"}');
 };
 
+// setGraticule generates graticule for map
 function setGraticule(map,path){
         // create graticule generator
         var graticule = d3.geoGraticule()
@@ -149,6 +154,7 @@ function setGraticule(map,path){
             .attr("d", path); // project graticule lines
 };
 
+// joinData() combines TopoJSON & CSV data based on primary key
 function joinData(wisconsinCounties, csvData){
     //loop through csv to assign each set of csv attribute values to geojson region
     for (var i=0; i<csvData.length; i++){
@@ -452,6 +458,7 @@ function setDotPlot(csvData, colorScale){
 
 };
 
+// creates dropdown based on arrayObj array
 function createDropdown(csvData){
 
     var left = document.querySelector('.map').getBoundingClientRect().left + 8,
@@ -611,7 +618,7 @@ function dehighlight(props){
 
 function setLabel(props){
     //label content
-    var labelAttribute = "<b style='font-size:30px;'>" + props[expressed] + 
+    var labelAttribute = "<b style='font-size:25px;'>" + props[expressed] + 
     "</b> <b>" + arrayDict[expressed] + "</b>";
 
     //create info label div
@@ -626,7 +633,7 @@ function setLabel(props){
         .html(props.NAMELSAD);
 };
 
-//function to move info label with mouse
+// function to move info label with mouse
 function moveLabel(){
     //get width of label
     var labelWidth = d3.select(".infolabel")
@@ -634,15 +641,15 @@ function moveLabel(){
         .getBoundingClientRect()
         .width;
 
-    //use coordinates of mousemove event to set label coordinates
+    // use coordinates of mousemove event to set label coordinates
     var x1 = event.clientX + 10,
         y1 = event.clientY - 75,
         x2 = event.clientX - labelWidth - 10,
         y2 = event.clientY + 25;
 
-    //horizontal label coordinate, testing for overflow
+    // horizontal label coordinate, testing for overflow
     var x = event.clientX > window.innerWidth - labelWidth - 20 ? x2 : x1; 
-    //vertical label coordinate, testing for overflow
+    // vertical label coordinate, testing for overflow
     var y = event.clientY < 75 ? y2 : y1; 
 
     d3.select(".infolabel")
