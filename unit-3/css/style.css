@@ -32,7 +32,7 @@
     max-width: auto;
     text-align: auto;
     position: absolute;
-    top: calc(100% - 20px); /* adjust the top value as needed */
+    top: calc(100% - 40px); /* adjust the top value as needed */
     width: auto;
     font-family: 'Open Sans', sans-serif;
     font-size: 1em;
