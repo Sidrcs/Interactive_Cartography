@@ -3,11 +3,11 @@
 //pseudo-global variable    
 var attrArray = ["stfid", "adm2_code",	"NAME",	"hh1620_est",	"persons1620_est",	"hhkids1620_est",	"kids1620_est",	"seniors1620_est",	"edlesshs1620_est",	"langeng1620_est",	"langasn1620_est",	"racewhite1620_est",	"raceaa1620_est",	"raceasian1620_est",	"raceamind1620_est",	"hispanic1620_est",	"noncitizens1620_est",	"drive1620_est", "prateacs1620_est",	"pratekidsacs1620_est",	"gini1620_est",	"renters1620_est",	"noveh1620_est"];
 
-var arrayDict = {"stfid" : "Unique ID",	"adm2_code" : "admin2 code","NAME" : "County name", "hh1620_est":"Percent Households",	"persons1620_est":"Percent persons (Total)",	"hhkids1620_est":"Household with children",	"kids1620_est":"Children",	"seniors1620_est":"Seniors",	"edlesshs1620_est":"Education less than high school",	"langeng1620_est":"English spoken at home",	"langasn1620_est":"Asian language spoken at home",	"racewhite1620_est":"Percent White", "raceaa1620_est":"Percent African American", "raceasian1620_est":"Percent Asian",	"raceamind1620_est":"Percent Native Americans",	"hispanic1620_est":"Percent Hispanic", "noncitizens1620_est":"Percent Non-citizens",	"drive1620_est":"Workers driving or carpooling to work", "prateacs1620_est":"Poverty (all persons)",	"pratekidsacs1620_est":"Poverty (kids)",	"gini1620_est":"Gini index of income inequality",	"renters1620_est":"Households renting home", "noveh1620_est":"Households without vehicle"};
+var arrayDict = {"stfid" : "Unique ID",	"adm2_code" : "admin2 code","NAME" : "County name", "hh1620_est":"Percent Households",	"persons1620_est":"Percent persons (Total)",	"hhkids1620_est":"Percent Household with children",	"kids1620_est":"Percent Children",	"seniors1620_est":" Percent Seniors",	"edlesshs1620_est":"Education less than high school (%)",	"langeng1620_est":"English spoken at home (%)",	"langasn1620_est":"Asian language spoken at home (%)",	"racewhite1620_est":"Percent White", "raceaa1620_est":"Percent African American", "raceasian1620_est":"Percent Asian",	"raceamind1620_est":"Percent Native Americans",	"hispanic1620_est":"Percent Hispanic", "noncitizens1620_est":"Percent Non-citizens",	"drive1620_est":"Workers driving or carpooling to work (%)", "prateacs1620_est":"Poverty (all persons %)",	"pratekidsacs1620_est":"Poverty (kids %)",	"gini1620_est":"Gini index of income inequality",	"renters1620_est":"Households renting home (%)", "noveh1620_est":"Households without vehicle (%)"};
 
-var arrayObj = [{data:"hh1620_est", text:"Percent Households"}, {data:"persons1620_est", text:"Percent persons (Total)"}, {data:"hhkids1620_est", text:"Household with children"}, {data:"kids1620_est", text:"Children"}, {data:"seniors1620_est", text:"Seniors"}, {data:"edlesshs1620_est", text:"Education less than high school"}, {data:"langeng1620_est", text:"English spoken at home"}, {data:"langasn1620_est", text:"Asian language spoken at home"}, {data:"racewhite1620_est", text:"Percent White"}, {data:"raceaa1620_est", text:"Percent African American"}, {data:"raceasian1620_est", text:"Percent Asian"}, {data:"raceamind1620_est", text:"Percent Native Americans"}, {data:"raceamind1620_est", text:"Percent Native Americans"}, {data:"hispanic1620_est", text:"Percent Hispanic"}, {data:"noncitizens1620_est", text:"Percent Non-citizens"}, {data:"drive1620_est", text:"Workers driving or carpooling to work"}, {data:"prateacs1620_est", text:"Poverty (all persons)"}, {data:"pratekidsacs1620_est", text:"Poverty (kids)"}, {data:"gini1620_est", text:"Gini index of income inequality"}, {data:"renters1620_est", text:"Households renting home"}, {data:"noveh1620_est", text:"Households without vehicle"}];
+var arrayObj = [{data:"hh1620_est", text:"Percent Households"}, {data:"persons1620_est", text:"Percent persons (Total)"}, {data:"hhkids1620_est", text:"Percent Household with children"}, {data:"kids1620_est", text:"Percent Children"}, {data:"seniors1620_est", text:"Percent Seniors"}, {data:"edlesshs1620_est", text:"Education less than high school (%)"}, {data:"langeng1620_est", text:"English spoken at home (%)"}, {data:"langasn1620_est", text:"Asian language spoken at home (%)"}, {data:"racewhite1620_est", text:"Percent White"}, {data:"raceaa1620_est", text:"Percent African American"}, {data:"raceasian1620_est", text:"Percent Asian"}, {data:"raceamind1620_est", text:"Percent Native Americans"}, {data:"hispanic1620_est", text:"Percent Hispanic"}, {data:"noncitizens1620_est", text:"Percent Non-citizens"}, {data:"drive1620_est", text:"Workers driving or carpooling to work"}, {data:"prateacs1620_est", text:"Poverty (all persons %)"}, {data:"pratekidsacs1620_est", text:"Poverty (kids %)"}, {data:"gini1620_est", text:"Gini index of income inequality"}, {data:"renters1620_est", text:"Households renting home"}, {data:"noveh1620_est", text:"Households without vehicle (%)"}];
 
-var expressed = attrArray[4]; // loaded attribute based on index
+var expressed = attrArray[20]; // loaded attribute based on index
 
 // create chart dimensions
 var chartWidth = window.innerWidth * 0.425,
@@ -22,14 +22,14 @@ translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
 // create a scale to size lines proportionally to frame and for axis
 var yScale = d3.scaleLinear()
 .range([463, 0])
-.domain([0, 20]);
+.domain([0, 0.6]);
 
 window.onload = setMap();
 
 // setup a choropleth map
 function setMap(){
     // map frame dimensions
-    var width = window.innerWidth * 0.48,
+    var width = window.innerWidth * 0.475;
         height = 473;
 
     // create new svg container for the map
@@ -93,39 +93,40 @@ function setMap(){
         setDotPlot(csvData, colorScale);
 
         // add color legend
-        makeLegend(colorScale);
+        makeColorLegend(colorScale);
        
     };
 };
 
-function createDropdown(csvData){
+function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
+    // add Wisconsin to map
+   var counties = map.selectAll(".counties")
+     .data(wisconsinCounties)
+     .enter()
+     .append("path")
+     .attr("class", function(d){
+         // console.log("counties",d.properties.adm2_code)
+         return "counties " + d.properties.adm2_code;
+     })
+     .attr("d", path)
+     .style("fill", function(d){            
+       var value = d.properties[expressed];            
+       if(value) {                
+           return colorScale(d.properties[expressed]);            
+       } else {                
+           return "#ccc";            
+       }    
+   })
+   .on("mouseover", function(event, d){
+       highlight(d.properties);
+   })
+   .on("mouseout", function(event, d){
+       dehighlight(d.properties);
+   })
+   .on("mousemove", moveLabel);
 
-    var left = document.querySelector('.map').getBoundingClientRect().left + 8,
-        top = document.querySelector('.map').getBoundingClientRect().top + 8;
-
-    //add select element
-    var dropdown = d3.select("body")
-        .append("select")
-        .attr("class", "dropdown")
-        .style('left', left + "px")
-        .style("top", top + "px")
-        .on("change", function(){
-            changeAttribute(this.value, csvData)
-        });
-
-    //add initial option
-    var titleOption = dropdown.append("option")
-        .attr("class", "titleOption")
-        .attr("disabled", "true")
-        .text("Select Attribute");
-
-    //add attribute name options
-    var attrOptions = dropdown.selectAll("attrOptions")
-        .data(arrayObj)
-        .enter()
-        .append("option")
-        .attr("value", function(d){ return d.data })
-        .text(function(d){ return d.text });
+   var desc = counties.append("desc")
+       .text('{"stroke": "#464545", "stroke-width": "0.5px"}');
 };
 
 function setGraticule(map,path){
@@ -176,6 +177,7 @@ function joinData(wisconsinCounties, csvData){
     return wisconsinCounties
     
 };
+
 //function to create color scale generator
 function makeColorScale(data){
     var colorClasses = ["#ffffcc", "#c2e699", "#78c679", "#31a354", "#006837"];
@@ -193,81 +195,55 @@ function makeColorScale(data){
     return colorScale;
 };
 
-function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
-     // add Wisconsin to map
-    var counties = map.selectAll(".counties")
-      .data(wisconsinCounties)
-      .enter()
-      .append("path")
-      .attr("class", function(d){
-          // console.log("counties",d.properties.adm2_code)
-          return "counties " + d.properties.adm2_code;
-      })
-      .attr("d", path)
-      .style("fill", function(d){            
-        var value = d.properties[expressed];            
-        if(value) {                
-            return colorScale(d.properties[expressed]);            
-        } else {                
-            return "#ccc";            
-        }    
-    })
-    .on("mouseover", function(event, d){
-        highlight(d.properties);
-    })
-    .on("mouseout", function(event, d){
-        dehighlight(d.properties);
-    })
-    .on("mousemove", moveLabel);
-
-    var desc = counties.append("desc")
-        .text('{"stroke": "#000", "stroke-width": "0.5px"}');
-};
-
-// code from Stackoverflow
-function makeLegend(color) {
+// Redesigned code from Stackoverflow (via Annika Anderson)
+function makeColorLegend(color) {
     var width = 300,
         height = 300;
         topBottomPadding = 5;
+
+    var left = document.querySelector(".map").getBoundingClientRect().left,
+        bottom  = document.querySelector(".map").getBoundingClientRect().bottom;
 
     var svg = d3.select("body")
         .append("svg")
         .attr("class", "legend")
         .attr("width", width)
         .attr("height", height)
-        .style("float", 'left');
+        .style("left", left - 90)
+        .style("top", bottom - 120);
 
-    var legend = svg.selectAll('g.legendEntry')
+    var legend = svg.selectAll("g.legendEntry")
         .data(color.range().reverse())
         .enter()
-        .append('g').attr('class', 'legendEntry')
-        .style("float", 'left');
-
-    legend.append('rect')
+        .append("g").attr("class", "legendEntry")
+        .style("float", "left");
+        
+    legend.append("rect")
         .style("float", 'left')
         .attr("x", width - 200)
         .attr("y", function (d, i) {
             return i * 20;
         })
-        .attr("width", 15)
-        .attr("height", 15)
-        .style("stroke", "black")
-        .style("stroke-width", 1)
+        .attr("width", 26)
+        .attr("height", 22)
+        .style("stroke", "#bdbdbd")
+        .style("stroke-width", 0.5)
         .style("fill", function (d) { return d; });
 
     //the data objects are the fill colors
-    legend.append('text')
-        .attr("x", width - 175) //leave 5 pixel space after the <rect>
+    legend.append("text")
+        .attr("x", width - 170) //leave 5 pixel space after the <rect>
         .attr("y", function (d, i) {
-            return i * 20;
+            return i * 22.5;
         })
         .attr("dy", "0.8em") //place text one line *below* the x,y point
         .text(function (d, i) {
             var extent = color.invertExtent(d);
-            //extent will be a two-element array, format it however you want:
+            //extent will be a two-element array
             var format = d3.format("0.2f");
             return format(+extent[0]) + " - " + format(+extent[1]);
-        })
+        }) 
+        .style("color", "#464545");
 };
 
 //function to create coordinated bar chart
@@ -351,11 +327,10 @@ function setChart(csvData, colorScale){
         .attr("transform", translate);
 
     var desc = counties.append("desc")
-        .text('{"stroke": "#000", "stroke-width": "0.5px"}');
+        .text('{"stroke": "#464545", "stroke-width": "1px"}');
 };
 
-// function to create coordinated lollipop chart
-// source URL - https://d3-graph-gallery.com/graph/lollipop_basic.html
+// function to create coordinated lollipop chart from https://d3-graph-gallery.com/graph/lollipop_basic.html
 function setDotPlot(csvData, colorScale){
     // create chart dimensions
     var chartWidth = window.innerWidth * 0.425,
@@ -477,6 +452,37 @@ function setDotPlot(csvData, colorScale){
 
 };
 
+function createDropdown(csvData){
+
+    var left = document.querySelector('.map').getBoundingClientRect().left + 8,
+        top = document.querySelector('.map').getBoundingClientRect().top + 6;
+        bottom = document.querySelector('.map').getBoundingClientRect().bottom;
+
+    //add select element
+    var dropdown = d3.select("body")
+        .append("select")
+        .attr("class", "dropdown")
+        .style("left", left + "px")
+        .style("top", top + "px")
+        .on("change", function(){
+            changeAttribute(this.value, csvData)
+        });
+
+    //add initial option
+    var titleOption = dropdown.append("option")
+        .attr("class", "titleOption")
+        .attr("disabled", "true")
+        .text("Select Attribute");
+
+    //add attribute name options
+    var attrOptions = dropdown.selectAll("attrOptions")
+        .data(arrayObj)
+        .enter()
+        .append("option")
+        .attr("value", function(d){ return d.data })
+        .text(function(d){ return d.text });
+};
+
 //dropdown change event handler
 function changeAttribute(attribute, csvData) {
 
@@ -527,7 +533,7 @@ function changeAttribute(attribute, csvData) {
     d3.select(".axis").call(yAxis)
 
     d3.select(".legend").remove();
-    makeLegend(colorScale);
+    makeColorLegend(colorScale);
 
     // set line & circle positions, heights, and colors
     updateChart(lines, circles, csvData.length, colorScale);
@@ -580,7 +586,6 @@ function highlight(props){
         
     setLabel(props);
 };
-
 //function to reset the element style on mouseout
 function dehighlight(props){
     var selected = d3.selectAll("." + props.adm2_code)
@@ -606,8 +611,8 @@ function dehighlight(props){
 
 function setLabel(props){
     //label content
-    var labelAttribute = "<h1>" + props[expressed]
-        "</h1><b>" + expressed + "</b>";
+    var labelAttribute = "<b style='font-size:30px;'>" + props[expressed] + 
+    "</b> <b>" + arrayDict[expressed] + "</b>";
 
     //create info label div
     var infolabel = d3.select("body")
@@ -616,7 +621,7 @@ function setLabel(props){
         .attr("id", props.adm2_code + "_label")
         .html(labelAttribute);
 
-    var regionName = infolabel.append("div")
+    var countyName = infolabel.append("div")
         .attr("class", "labelname")
         .html(props.NAMELSAD);
 };
