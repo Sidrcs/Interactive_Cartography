@@ -26,6 +26,13 @@
     box-shadow: 2px 2px 5px 2px #8e8e8e;
 }
 
+/* hyperlinks style*/
+a:-webkit-any-link {
+    color: #538a64;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .mapDesc{
     margin-left: 20px;
     margin-right: 20px;
@@ -120,7 +127,6 @@ option {
 }
 
 /* Dynamic label design */
-
 .infolabel {    
     margin: 0 20px 0 0; 
     z-index: 11;   

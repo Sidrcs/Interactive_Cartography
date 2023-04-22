@@ -184,22 +184,34 @@ function joinData(wisconsinCounties, csvData){
     
 };
 
-//function to create color scale generator
+// function to create color scale generator
 function makeColorScale(data){
-    // sequential color schemes are adopted from ColorBrewer (Green Below)
-    var colorClasses = ["#edf8e9","#bae4b3","#74c476","#31a354","#006d2c"];
-    //create color scale generator
-    var colorScale = d3.scaleQuantile()
-        .range(colorClasses);
-    //build array of all values of the expressed attribute
-    var domainArray = [];
-    for (var i=0; i<data.length; i++){
-        var val = parseFloat(data[i][expressed]);
-        domainArray.push(val);
+    // sequential color schemes are adopted from ColorBrewer
+    var colorClassesGreen = ["#edf8e9","#bae4b3","#74c476","#31a354","#006d2c"];
+    var colorClassesRed = ["#ffffd4","#fed98e","#fe9929","#d95f0e","#993404"];
+
+    if (expressed == "prateacs1620_est" || expressed == "pratekidsacs1620_est" || expressed == "gini1620_est" || expressed == "noveh1620_est"){
+        var colorScaleType = colorClassesRed
+    }
+    else {
+        colorScaleType = colorClassesGreen
+    }
+
+  // create color scale generator
+  var colorScale = d3.scaleQuantile()
+      .range(colorScaleType);
+
+  // build array of all values of the expressed attribute
+  var domainArray = [];
+   for (var i=0; i<data.length; i++){
+    var val = parseFloat(data[i][expressed]);
+    domainArray.push(val);
     };
-    //assign array of expressed values as scale domain
+     
+    // assign array of expressed values as scale domain
     colorScale.domain(domainArray);
     return colorScale;
+    
 };
 
 // Redesigned code from Stackoverflow (via Annika Anderson)
@@ -620,6 +632,13 @@ function dehighlight(props){
 };
 
 function setLabel(props){
+
+    if (expressed == "prateacs1620_est" || expressed == "pratekidsacs1620_est" || expressed == "gini1620_est" || expressed == "noveh1620_est"){
+        var labelColor = "#ffffd4"
+    }
+    else {
+        labelColor = "#e3f0deea"
+    }
     //label content
     var labelAttribute = "<b style='font-size:25px;'>" + props[expressed] + 
     "</b> <b>" + arrayDict[expressed] + "</b>";
@@ -629,11 +648,13 @@ function setLabel(props){
         .append("div")
         .attr("class", "infolabel")
         .attr("id", props.adm2_code + "_label")
-        .html(labelAttribute);
+        .html(labelAttribute)
+        .style("background-color", labelColor);
 
     var countyName = infolabel.append("div")
         .attr("class", "labelname")
-        .html(props.NAMELSAD);
+        .html(props.NAMELSAD)
+        .style("background-color", labelColor);
 };
 
 // function to move info label with mouse
