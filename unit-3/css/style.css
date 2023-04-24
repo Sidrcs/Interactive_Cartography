@@ -151,7 +151,7 @@ option {
 
 /* color legend */
 .legend{
-    position:absolute;
+    position: absolute;
     font-family: 'Open Sans', sans-serif;
     font-size: 0.9em;
     font-weight: normal;

@@ -373,6 +373,9 @@ function setDotPlot(csvData, colorScale){
         .data(csvData)
         .enter()
         .append("rect")
+        .sort(function(a, b){
+            return parseFloat(b[expressed])-parseFloat(a[expressed])
+        })
         .attr("class", function(d){
             // console.log("line", d.adm2_code)
             return "line " + d.adm2_code;
@@ -400,6 +403,9 @@ function setDotPlot(csvData, colorScale){
      var circles = chart.selectAll(".circle")
         .data(csvData)
         .join("circle")
+        .sort(function(a, b){
+            return parseFloat(b[expressed])-parseFloat(a[expressed])
+        })
         .attr("class", function(d){
             // console.log("line", d.adm2_code)
             return "circle " + d.adm2_code;
@@ -515,6 +521,9 @@ function changeAttribute(attribute, csvData) {
 
     // set lines for each county
     var lines = d3.selectAll(".line")
+        .sort(function(a, b){
+            return parseFloat(b[expressed])-parseFloat(a[expressed])
+        })
         .transition() //add animation
         .delay(function(d, i){
             return i * 10
@@ -523,6 +532,9 @@ function changeAttribute(attribute, csvData) {
 
     // circles
     var circles = d3.selectAll("circle")
+        .sort(function(a, b){
+            return parseFloat(b[expressed])-parseFloat(a[expressed])
+        })
 
     var domainArray = [];
     for (var i=0; i<csvData.length; i++){
