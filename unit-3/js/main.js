@@ -491,6 +491,7 @@ function setDotPlot(csvData, colorScale){
         .attr("stdDeviation", "1")
         .attr("flood-color", "#3d3d3d")
         .attr("flood-opacity", "0.4");
+
     circles.style("filter", "url(#drop-shadow)");
     lines.style("filter", "url(#drop-shadow)")
 

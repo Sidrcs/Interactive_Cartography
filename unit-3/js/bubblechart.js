@@ -22,28 +22,6 @@ window.onload = function(){
             .attr("y",50)
             .style("fill","#FFFFFF");
 
-    /*
-    var dataArray = [10, 20, 30, 40, 50];
-
-    var circles = container.selectAll(".circles") //but wait--there are no circles yet!
-        .data(dataArray) //here we feed in an array
-        .enter() //one of the great mysteries of the universe
-        .append("circle") //add a circle for each datum
-        .attr("class", "circles") //apply a class name to all circles
-        .attr("r", function(d, i){ //circle radius
-            console.log("d:", d, "i:", i); //let's take a look at d and i
-            return d;
-        })
-        .attr("cx", function(d, i){ //x coordinate
-            return 70 + (i * 180);
-        })
-        .attr("cy", function(d){ //y coordinate
-            return 450 - (d * 5);
-        });
-
-    console.log(container)
-    console.log(innerRect)*/
-
     var cityPop = [
         { 
             city: 'Madison',
@@ -80,7 +58,7 @@ window.onload = function(){
     //scale for circles center y coordinate
     var y = d3.scaleLinear()
         .range([450, 50]) //was 440, 95
-        .domain([0, 700000]); //was minPop, maxPop
+        .domain([0, maxPop]); //was minPop, maxPop
 
     var color = d3.scaleLinear()
         .range([
