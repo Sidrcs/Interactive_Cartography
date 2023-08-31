@@ -78,38 +78,6 @@
     box-shadow: 2px 2px 5px 2px #e7e7e7;
 }
 
-
-/* hyperlinks style*/
-a:-webkit-any-link {
-    color: #538a64;
-    cursor: pointer;
-    text-decoration: underline;
-}
-
-.mapDesc{
-    margin-left: 20px;
-    margin-right: 20px;
-    max-width: auto;
-    text-align: auto;
-    position: absolute;
-    bottom: -200px;
-    width: auto;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 1em;
-    color:#4d6245b7;
-}
-
-.credits{
-    position: absolute;
-    bottom: -250px;
-    left: 0;
-    width: 100%;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 1em;
-    color:#91a28aa0;
-    text-align: center;
-}
-
 .popup {
     position: fixed;
     top: 50%;
@@ -143,18 +111,7 @@ a:-webkit-any-link {
     box-shadow: 2px 2px 4px #999;
 }
 
-.gratLines {
-    fill: none;
-    stroke: #999;
-    stroke-width: 1px;
-}
-
-.gratBackground {
-    fill: #D5E3FF;
-}
-
 /* Chart style */
-
 .chart {
     float: right;
     margin: 7px 20px 0 0;
