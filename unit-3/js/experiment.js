@@ -54,7 +54,7 @@ function setMap(){
     // promises container is created to hold the promise
     var promises = [];
 
-    // d3.csv(), d3.json() methods read csv, topojson files
+    // d3.csv(), d3.json() methods   read csv, topojson files
     promises.push(d3.csv("data/wisconsin_counties_data.csv"));
     promises.push(d3.json("data/Wisc_counties.topojson"));
 
@@ -131,6 +131,21 @@ function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
    // county dehighlight solution
    var desc = counties.append("desc")
        .text('{"stroke": "#464545", "stroke-width": "0.5px"}');
+    
+     // add drop shadow to counties
+     var defs = map.append("defs");
+     var filter = defs.append("filter")
+         .attr("id", "drop-shadow")
+         .attr("height", "150%")
+         .attr("width", "150%");
+ 
+     filter.append("feDropShadow")
+         .attr("dx", "1")
+         .attr("dy", "1")
+         .attr("stdDeviation", "1")
+         .attr("flood-color", "#3d3d3d")
+         .attr("flood-opacity", "0.4");
+     counties.style("filter", "url(#drop-shadow)");
 };
 
 // setGraticule generates graticule for map
@@ -385,6 +400,9 @@ function setDotPlot(csvData, colorScale){
         .data(csvData)
         .enter()
         .append("rect")
+        .sort(function(a, b){
+            return parseFloat(b[expressed])-parseFloat(a[expressed])
+        })
         .attr("class", function(d){
             // console.log("line", d.adm2_code)
             return "line " + d.adm2_code;
@@ -412,6 +430,9 @@ function setDotPlot(csvData, colorScale){
      var circles = chart.selectAll(".circle")
         .data(csvData)
         .join("circle")
+        .sort(function(a, b){
+            return parseFloat(b[expressed])-parseFloat(a[expressed])
+        })
         .attr("class", function(d){
             // console.log("line", d.adm2_code)
             return "circle " + d.adm2_code;
@@ -469,7 +490,25 @@ function setDotPlot(csvData, colorScale){
     var desc2 = circles.append("desc")
      .text('{"stroke": "#636363", "stroke-width": "1px"}');
 
+     // add drop shadow to counties
+    var defs = map.append("defs");
+    var filter = defs.append("filter")
+        .attr("id", "drop-shadow")
+        .attr("height", "150%")
+        .attr("width", "150%");
+
+    filter.append("feDropShadow")
+        .attr("dx", "1")
+        .attr("dy", "1")
+        .attr("stdDeviation", "1")
+        .attr("flood-color", "#3d3d3d")
+        .attr("flood-opacity", "0.4");
+
+    circles.style("filter", "url(#drop-shadow)");
+    lines.style("filter", "url(#drop-shadow)")
+
 };
+
 
 // creates dropdown based on arrayObj array
 function createDropdown(csvData){
@@ -527,6 +566,9 @@ function changeAttribute(attribute, csvData) {
 
     // set lines for each county
     var lines = d3.selectAll(".line")
+.sort(function(a, b){
+            return parseFloat(b[expressed])-parseFloat(a[expressed])
+        })
         .transition() //add animation
         .delay(function(d, i){
             return i * 10
@@ -535,6 +577,9 @@ function changeAttribute(attribute, csvData) {
 
     // circles
     var circles = d3.selectAll("circle")
+.sort(function(a, b){
+            return parseFloat(b[expressed])-parseFloat(a[expressed])
+        })
 
     var domainArray = [];
     for (var i=0; i<csvData.length; i++){
