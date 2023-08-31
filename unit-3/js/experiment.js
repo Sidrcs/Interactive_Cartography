@@ -62,6 +62,25 @@ function setMap(){
     // bind the output into callback function
     Promise.all(promises).then(callback);
 
+    // add popup that displays web page information
+    var popup = d3.select("body")
+        .append("div")
+        .attr("class", "popup")
+        .html("<h3> Welcome to Demographics and Social Indicators D3 Map !</h3> <ul align = 'left'> <li> <b> Attention user :</b> Interact with the map by selecting an attribute from the dropdown list and visually explore demographic variables and social indicators.</li> <li>Hover over any county on Wisconsin Map or any Dot plot line to retrieve information through a coordinated multi-visualization (CMV).</li> <li>Wisconsin interactive map displayed is based on TIGER line shapefile provided by US Census Bureau.</li> <li> Information displayed is calculated data from American Community Survey (<b>ACS 2016-2020</b>). Therefore prone to <b>errors</b>.</li></ul> <p>By clicking 'OK' to continue, you accept that there errors in the calculations and map display, and they are acceptable.</p> </li> <button class='okBtn'><b>OK</b></button>");
+
+        // show popup when page loads
+        window.onload = function() {
+            popup.style("display", "block");
+        }
+
+        // hide popup when user clicks "OK"
+        d3.select(".okBtn").on("click", closePopup);
+
+        // close popup function
+        function closePopup() {
+        popup.style("display", "none");
+    }
+
     // callback reads the output response of promises (read files - csv, topojson)
     // retrieves the file information
     function callback(data){
@@ -76,22 +95,16 @@ function setMap(){
 
         // translate Wisconsin counties from topojson to geojson
         var wisconsinCounties = topojson.feature(wisconsin, wisconsin.objects.Wisc_counties).features;
-
         // join data of Wisconsin counties
         wisconsinCounties = joinData(wisconsinCounties,csvData);
-
         // create a colorscale
         var colorScale = makeColorScale(csvData);
-
         // add enumeration units to the map
         setEnumerationUnits(wisconsinCounties, map, path, colorScale)
-
         // add dropdown to the map
         createDropdown(csvData);
-
         // add dotplot visualization to the map
         setDotPlot(csvData, colorScale);
-
         // add color legend
         makeColorLegend(colorScale);
        
@@ -131,21 +144,6 @@ function setEnumerationUnits(wisconsinCounties, map, path, colorScale){
    // county dehighlight solution
    var desc = counties.append("desc")
        .text('{"stroke": "#464545", "stroke-width": "0.5px"}');
-    
-     // add drop shadow to counties
-     var defs = map.append("defs");
-     var filter = defs.append("filter")
-         .attr("id", "drop-shadow")
-         .attr("height", "150%")
-         .attr("width", "150%");
- 
-     filter.append("feDropShadow")
-         .attr("dx", "1")
-         .attr("dy", "1")
-         .attr("stdDeviation", "1")
-         .attr("flood-color", "#3d3d3d")
-         .attr("flood-opacity", "0.4");
-     counties.style("filter", "url(#drop-shadow)");
 };
 
 // setGraticule generates graticule for map
@@ -205,7 +203,7 @@ function makeColorScale(data){
     var colorClassesGreen = ["#edf8e9","#bae4b3","#74c476","#31a354","#006d2c"];
     var colorClassesRed = ["#ffffd4","#fed98e","#fe9929","#d95f0e","#993404"];
 
-    if (expressed == "prateacs1620_est" || expressed == "pratekidsacs1620_est" || expressed == "gini1620_est" || expressed == "noveh1620_est"){
+    if (expressed == "prateacs1620_est" || expressed == "pratekidsacs1620_est" || expressed == "gini1620_est" || expressed == "noveh1620_est" || expressed == "edlesshs1620_est"){
         var colorScaleType = colorClassesRed
     }
     else {
@@ -490,23 +488,6 @@ function setDotPlot(csvData, colorScale){
     var desc2 = circles.append("desc")
      .text('{"stroke": "#636363", "stroke-width": "1px"}');
 
-     // add drop shadow to counties
-    var defs = map.append("defs");
-    var filter = defs.append("filter")
-        .attr("id", "drop-shadow")
-        .attr("height", "150%")
-        .attr("width", "150%");
-
-    filter.append("feDropShadow")
-        .attr("dx", "1")
-        .attr("dy", "1")
-        .attr("stdDeviation", "1")
-        .attr("flood-color", "#3d3d3d")
-        .attr("flood-opacity", "0.4");
-
-    circles.style("filter", "url(#drop-shadow)");
-    lines.style("filter", "url(#drop-shadow)")
-
 };
 
 
@@ -566,7 +547,7 @@ function changeAttribute(attribute, csvData) {
 
     // set lines for each county
     var lines = d3.selectAll(".line")
-.sort(function(a, b){
+        .sort(function(a, b){
             return parseFloat(b[expressed])-parseFloat(a[expressed])
         })
         .transition() //add animation
@@ -577,7 +558,7 @@ function changeAttribute(attribute, csvData) {
 
     // circles
     var circles = d3.selectAll("circle")
-.sort(function(a, b){
+        .sort(function(a, b){
             return parseFloat(b[expressed])-parseFloat(a[expressed])
         })
 
@@ -678,7 +659,7 @@ function dehighlight(props){
 
 function setLabel(props){
 
-    if (expressed == "prateacs1620_est" || expressed == "pratekidsacs1620_est" || expressed == "gini1620_est" || expressed == "noveh1620_est"){
+    if (expressed == "prateacs1620_est" || expressed == "pratekidsacs1620_est" || expressed == "gini1620_est" || expressed == "noveh1620_est" || expressed == "edlesshs1620_est"){
         var labelColor = "#ffffd4"
     }
     else {
@@ -704,6 +685,7 @@ function setLabel(props){
 
 // function to move info label with mouse
 function moveLabel(){
+    var offset = window.scrollY
     //get width of label
     var labelWidth = d3.select(".infolabel")
         .node()
@@ -712,7 +694,7 @@ function moveLabel(){
 
     // use coordinates of mousemove event to set label coordinates
     var x1 = event.clientX + 10,
-        y1 = event.clientY - 75,
+        y1 = event.clientY - 75 + offset,
         x2 = event.clientX - labelWidth - 10,
         y2 = event.clientY + 25;
 
