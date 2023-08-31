@@ -52,6 +52,33 @@
     box-shadow: 2px 2px 5px 2px #e7e7e7;
 }
 
+.portfolio-button {
+    background-color: #e3f0de;
+    color: #006837cf;
+    stroke: #fff;
+    stroke-width: 5px;
+    padding: 3px 6px;
+    font-size: 15px;
+    cursor: pointer;
+    float: right;
+    margin-top: -4px;
+    border-radius: 4px;
+    border: 1px solid #fff;
+    font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
+    /*display: flex;*/
+}
+
+.portfolio-button:hover {
+    background-color: #fff;
+    color: #538a64;
+    border: 1px solid #e7e7e7;
+    box-shadow: 2px 2px 4px #999;
+    font-weight: bold;
+    box-shadow: 2px 2px 5px 2px #e7e7e7;
+}
+
+
 /* hyperlinks style*/
 a:-webkit-any-link {
     color: #538a64;
