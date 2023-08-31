@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link rel="icon" type="image/x-icon" href="img/wisc.ico"> 
+        <title>Wisconsin Interactive Map</title>
+
+        <!--put your external stylesheet links here-->
+        <link rel="stylesheet" href="css/style.css">
+        <!--[if IE<9]>
+            <link rel="stylesheet" href="css/style.ie.css">
+        <![endif]-->
+
+         <!--you can also place internal styles here;
+             place these within <style> tags-->
+        
+    </head>
+
+    <body>
+        <!--put your initial page content here-->
+        <div class = "mapTitle"> 
+            Demographics & Social Indicators of Wisconsin: A Visual Exploration 
+            <button class="reset-button" onClick="window.location.reload(true)">Reset</button>
+            <button class="portfolio-button" onClick="window.open('https://sidrcs.github.io/maps/Maps.html')">Portfolio</button>
+        </div>
+        <!--you can also use this space for internal scripts;
+        place these within <script> tags-->
+        <!--put your external script links here-->
+        <script type="text/javascript" src="lib/d3/d3.min.js"></script>
+        <script type="text/javascript" src="lib/topojson/topojson.min.js"></script>
+        <script type="text/javascript" src="js/experiment.js"></script>
+    </body>
+</html>

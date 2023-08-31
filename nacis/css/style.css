@@ -1,0 +1,248 @@
+/*CSS style for D3 Map*/
+
+.map {
+    fill: #E3DA93;
+    stroke: #464545;
+    stroke-width: 0.5px;
+    stroke-linecap: round;
+    /* stroke-dasharray: 2,2; */
+    border: medium solid #8e8e8e;
+    margin: 10px 0 0 20px;
+}
+  
+.mapTitle {
+    background-color: #538a64;
+    width: auto;
+    height: 20px;
+   /* border: 1px solid #464545;*/
+    padding: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color:#e3f0de;
+    box-shadow: 2px 2px 5px 2px #8e8e8e;
+}
+
+.reset-button {
+    background-color: #e3f0de;
+    color: #006837cf;
+    stroke: #fff;
+    stroke-width: 5px;
+    padding: 3px 6px;
+    font-size: 15px;
+    cursor: pointer;
+    float: left;
+    margin-top: -4px;
+    border-radius: 4px;
+    border: 1px solid #fff;
+    font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
+    /*display: flex;*/
+}
+
+.reset-button:hover {
+    background-color: #fff;
+    color: #538a64;
+    border: 1px solid #e7e7e7;
+    box-shadow: 2px 2px 4px #999;
+    font-weight: bold;
+    box-shadow: 2px 2px 5px 2px #e7e7e7;
+}
+
+.portfolio-button {
+    background-color: #e3f0de;
+    color: #006837cf;
+    stroke: #fff;
+    stroke-width: 5px;
+    padding: 3px 6px;
+    font-size: 15px;
+    cursor: pointer;
+    float: right;
+    margin-top: -4px;
+    border-radius: 4px;
+    border: 1px solid #fff;
+    font-weight: bold;
+    font-family: 'Open Sans', sans-serif;
+    /*display: flex;*/
+}
+
+.portfolio-button:hover {
+    background-color: #fff;
+    color: #538a64;
+    border: 1px solid #e7e7e7;
+    box-shadow: 2px 2px 4px #999;
+    font-weight: bold;
+    box-shadow: 2px 2px 5px 2px #e7e7e7;
+}
+
+
+/* hyperlinks style*/
+a:-webkit-any-link {
+    color: #538a64;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.mapDesc{
+    margin-left: 20px;
+    margin-right: 20px;
+    max-width: auto;
+    text-align: auto;
+    position: absolute;
+    bottom: -200px;
+    width: auto;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    color:#4d6245b7;
+}
+
+.credits{
+    position: absolute;
+    bottom: -250px;
+    left: 0;
+    width: 100%;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    color:#91a28aa0;
+    text-align: center;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #e3f0deea;
+    color: #636363;
+    border: 2px solid #999;
+    padding: 20px;
+    max-width: 700px;
+    width: 80%;
+    text-align: center;
+    box-shadow: 0px 0px 10px rgba(97, 97, 97, 0.3);
+    font-family: 'Open Sans', sans-serif;
+    z-index: 11;
+}
+
+.popup button {
+    padding: 10px 20px;
+    background-color: #31a354;
+    border: 1px solid #999;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+  
+.popup button:hover {
+    background-color: #fff;
+    color: #31a354;
+    box-shadow: 2px 2px 4px #999;
+}
+
+.gratLines {
+    fill: none;
+    stroke: #999;
+    stroke-width: 1px;
+}
+
+.gratBackground {
+    fill: #D5E3FF;
+}
+
+/* Chart style */
+
+.chart {
+    float: right;
+    margin: 7px 20px 0 0;
+}
+
+.chartTitle {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #464545;
+}
+
+.chartBackground {
+    fill: #ffffff00;
+}
+
+.chartFrame {
+    fill: none;
+    stroke: #999;
+    stroke-width: 3px;
+    shape-rendering: crispEdges;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #999;
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.8em;
+    fill: #999;
+}
+
+/* dropdown */
+.dropdown {
+    position: absolute;
+    background-color: #e3f0de;
+    z-index: 10;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 2px;
+    border: 1px solid #999;
+    box-shadow: 2px 2px 4px #999;
+    color: #464545;
+}
+
+option {
+    font-weight: normal;
+}
+
+/* Dynamic label design */
+.infolabel {    
+    margin: 0 20px 0 0; 
+    z-index: 11;   
+    position: absolute;
+    height: auto;
+    min-width: auto;
+    color: #464545;
+    background-color: #e3f0deea;
+    border: solid thin #464545;
+    padding: 5px 10px;
+    top: -100px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.infolabel h1 {
+    margin: 0 20px 0 0;
+    padding: 0;
+    display: inline-block;
+    line-height: 1em;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* color legend */
+.legend{
+    position: absolute;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.9em;
+    font-weight: normal;
+    color:#8e8e8e;
+}
+
+body {
+    background-image: url("../assets/background.png");
+    background-color: #f9fdf8ea;
+}
