@@ -96,7 +96,7 @@ a:-webkit-any-link {
     width: auto;
     font-family: 'Open Sans', sans-serif;
     font-size: 1em;
-    color:#91a28a;
+    color:#4d6245b7;
 }
 
 .credits{
@@ -243,5 +243,6 @@ option {
 }
 
 body {
+    background-image: url("../assets/background.png");
     background-color: #f9fdf8ea;
 }
